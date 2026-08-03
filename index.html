@@ -694,31 +694,26 @@ async function loadEmployee(){
 
     }
 
-    // USERS TABLE
+    // Employee Name comes from USERS table
     document.getElementById("employeeName").value =
         currentUser.full_name;
 
+    // Department comes from USERS table
     document.getElementById("department").value =
         currentUser.department;
 
-    document.getElementById("position").value =
-        currentUser.role;
-
     employeeID = currentUser.id;
 
-    // EMPLOYEE PROFILE TABLE
-    const { data, error } =
-        await supabaseClient
-
+    // Employee Number and Position come from employee_profiles
+    const { data, error } = await supabaseClient
         .from("employee_profiles")
-
-        .select("employee_number")
-
+        .select("employee_number, position")
         .eq("user_id", currentUser.id)
-
         .single();
 
     if(error){
+
+        console.log(error);
 
         alert(error.message);
 
@@ -727,7 +722,10 @@ async function loadEmployee(){
     }
 
     document.getElementById("employeeNumber").value =
-        data.employee_number;
+        data.employee_number || "";
+
+    document.getElementById("position").value =
+        data.position || "";
 
 }
 

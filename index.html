@@ -700,7 +700,94 @@ async function loadEmployee(){
         data.position || "";
 
 }
+/******************************************
+LOAD MY REQUESTS
+******************************************/
+async function loadMyRequests(){
 
+    const currentUser =
+        JSON.parse(localStorage.getItem("currentUser"));
+
+    if(!currentUser) return;
+
+    const {data,error} = await supabaseClient
+        .from("employee_overtime")
+        .select("*")
+        .eq("employee_id", currentUser.id)
+        .order("created_at",{ascending:false});
+
+    if(error){
+
+        console.log(error);
+
+        return;
+
+    }
+
+    const table =
+        document.getElementById("requestTable");
+
+    table.innerHTML="";
+
+    data.forEach(row=>{
+
+        table.innerHTML += `
+        <tr>
+
+            <td style="padding:10px;">
+                ${row.overtime_date}
+            </td>
+
+            <td>
+                ${row.total_hours}
+            </td>
+
+            <td>
+                ${row.department_status}
+            </td>
+
+            <td>
+                ${row.department_status}
+            </td>
+
+            <td>
+                ${row.hr_status}
+            </td>
+
+           <td>
+
+${row.department_status==="Pending" && row.hr_status==="Pending"
+
+? `
+
+<button onclick="editRequest('${row.id}')">
+
+Edit
+
+</button>
+
+<button onclick="deleteRequest('${row.id}')">
+
+Delete
+
+</button>
+
+`
+
+:
+
+`Approved`
+
+}
+
+</td>
+
+        </tr>
+        `;
+
+    });
+
+}
 /******************************************
 AUTO COMPUTE HOURS
 ******************************************/
@@ -889,11 +976,29 @@ hr_status:
 
 };
 
-const {error}=await supabaseClient
+let error;
 
-.from("employee_overtime")
+if(editingID){
 
-.insert([request]);
+    ({error} = await supabaseClient
+
+    .from("employee_overtime")
+
+    .update(request)
+
+    .eq("id",editingID));
+
+    editingID=null;
+
+}else{
+
+    ({error} = await supabaseClient
+
+    .from("employee_overtime")
+
+    .insert([request]));
+
+}
 
 if(error){
 
@@ -978,6 +1083,66 @@ loadMyRequests();
     });
 
     document.getElementById("requestTable").innerHTML = html;
+
+}
+    let editingID = null;
+
+async function editRequest(id){
+
+    const {data,error} = await supabaseClient
+
+    .from("employee_overtime")
+
+    .select("*")
+
+    .eq("id",id)
+
+    .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    editingID=id;
+
+    document.getElementById("overtimeDate").value=data.overtime_date;
+
+    document.getElementById("timeIn").value=data.time_in;
+
+    document.getElementById("timeOut").value=data.time_out;
+
+    document.getElementById("totalHours").value=data.total_hours;
+
+    document.getElementById("reason").value=data.reason;
+
+}
+    async function deleteRequest(id){
+
+    if(!confirm("Delete this overtime request?"))
+
+        return;
+
+    const {error}=await supabaseClient
+
+    .from("employee_overtime")
+
+    .delete()
+
+    .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    loadMyRequests();
 
 }
 /******************************************

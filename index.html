@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>
+
+INTERFREIGHT | Employee Overtime Request
+
+</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+<style>
+
+*{
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
+font-family:Poppins,sans-serif;
+
+}
+
+body{
+
+background:#F4F7FC;
+
+}
+
+:root{
+
+--primary:#0B4F9F;
+
+--secondary:#FDB913;
+
+--white:#ffffff;
+
+--border:#E5EAF2;
+
+--shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.sidebar{
+
+position:fixed;
+
+left:0;
+
+top:0;
+
+width:250px;
+
+height:100vh;
+
+background:var(--primary);
+
+color:white;
+
+}
+
+.logo{
+
+height:90px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:22px;
+
+font-weight:bold;
+
+border-bottom:1px solid rgba(255,255,255,.2);
+
+}
+
+.menu{
+
+margin-top:20px;
+
+}
+
+.menu a{
+
+display:flex;
+
+gap:12px;
+
+align-items:center;
+
+padding:15px 25px;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+.menu a:hover,
+
+.menu .active{
+
+background:var(--secondary);
+
+color:black;
+
+}
+
+.main{
+
+margin-left:250px;
+
+}
+
+.topbar{
+
+height:75px;
+
+background:white;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 30px;
+
+box-shadow:var(--shadow);
+
+}
+
+.content{
+
+padding:30px;
+
+}
+
+.card{
+
+background:white;
+
+padding:25px;
+
+border-radius:15px;
+
+box-shadow:var(--shadow);
+
+}
+
+.section-title{
+
+font-size:22px;
+
+color:var(--primary);
+
+margin-bottom:25px;
+
+}
+
+.form-grid{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:20px;
+
+}
+
+.form-group{
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.form-group label{
+
+margin-bottom:8px;
+
+font-weight:500;
+
+}
+
+.form-group input,
+
+.form-group select,
+
+.form-group textarea{
+
+padding:12px;
+
+border:1px solid var(--border);
+
+border-radius:8px;
+
+font-size:14px;
+
+}
+
+textarea{
+
+min-height:100px;
+
+resize:none;
+
+}
+
+.btn{
+
+padding:12px 20px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.btn-primary{
+
+background:var(--primary);
+
+color:white;
+
+}
+
+.btn-primary:hover{
+
+background:#083B77;
+
+}
+
+@media(max-width:768px){
+
+.sidebar{
+
+display:none;
+
+}
+
+.main{
+
+margin-left:0;
+
+}
+
+.form-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+INTERFREIGHT
+
+</div>
+
+<div class="menu">
+
+<a href="#" class="active">
+
+<i class="fa fa-clock"></i>
+
+Overtime Request
+
+</a>
+
+<a href="#">
+
+<i class="fa fa-history"></i>
+
+My Requests
+
+</a>
+
+<a href="#">
+
+<i class="fa fa-user"></i>
+
+Profile
+
+</a>
+
+<a href="#">
+
+<i class="fa fa-right-from-bracket"></i>
+
+Logout
+
+</a>
+
+</div>
+
+</div>
+
+
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="topbar">
+
+<div>
+
+<h2>
+
+Employee Overtime Request
+
+</h2>
+
+<small>
+
+Submit your overtime request for approval
+
+</small>
+
+</div>
+
+</div>
+
+
+
+<div class="content">
+
+<div class="card">
+
+<h2 class="section-title">
+
+Overtime Request Form
+
+</h2>
+
+
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+
+Employee Number
+
+</label>
+
+<input
+
+id="employeeNumber"
+
+readonly>
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>
+
+Employee Name
+
+</label>
+
+<input
+
+id="employeeName"
+
+readonly>
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>
+
+Department
+
+</label>
+
+<input
+
+id="department"
+
+readonly>
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>
+
+Position
+
+</label>
+
+<input
+
+id="position"
+
+readonly>
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>
+
+Overtime Date
+
+</label>
+
+<input
+
+type="date"
+
+id="overtimeDate">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>
+
+Time In
+
+</label>
+
+<input
+
+type="time"
+
+id="timeIn">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>
+
+Time Out
+
+</label>
+
+<input
+
+type="time"
+
+id="timeOut">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>
+
+Total Hours
+
+</label>
+
+<input
+
+id="totalHours"
+
+readonly>
+
+</div>
+
+
+
+<div class="form-group"
+
+style="grid-column:1/3;">
+
+<label>
+
+Reason for Overtime
+
+</label>
+
+<textarea
+
+id="reason">
+
+</textarea>
+
+</div>
+
+
+
+<div class="form-group"
+
+style="grid-column:1/3;">
+
+<label>
+
+Attachment
+
+</label>
+
+<input
+
+type="file"
+
+id="attachment">
+
+</div>
+
+
+
+</div>
+
+<br>
+
+<button
+
+class="btn btn-primary"
+
+id="submitOTBtn">
+
+<i class="fa fa-paper-plane"></i>
+
+Submit Overtime Request
+
+</button>
+
+</div>
+
+
+
+<!-- MY REQUESTS -->
+
+<br>
+
+<div class="card">
+
+<h2 class="section-title">
+
+My Overtime Requests
+
+</h2>
+
+
+
+<table
+
+style="width:100%;
+border-collapse:collapse;">
+
+<thead>
+
+<tr
+style="background:#0B4F9F;
+color:white;">
+
+<th style="padding:12px;">
+
+Date
+
+</th>
+
+<th>
+
+Hours
+
+</th>
+
+<th>
+
+Status
+
+</th>
+
+<th>
+
+Department
+
+</th>
+
+<th>
+
+HR
+
+</th>
+
+<th>
+
+Action
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="requestTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+/******************************************
+SUPABASE
+******************************************/
+
+const SUPABASE_URL="https://tuihpvykuqbqnfyfepql.supabase.co/";
+
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWhwdnlrdXFicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
+
+const supabaseClient=
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+/******************************************
+CURRENT EMPLOYEE
+******************************************/
+
+let employeeID=null;
+
+
+
+/******************************************
+LOAD EMPLOYEE INFORMATION
+******************************************/
+
+async function loadEmployee(employeeNumber){
+
+const {data,error}=await supabaseClient
+
+.from("employee_profiles")
+
+.select("*")
+
+.eq("employee_number",employeeNumber)
+
+.single();
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+employeeID=data.id;
+
+document.getElementById("employeeNumber").value=data.employee_number;
+
+document.getElementById("employeeName").value=
+
+(data.first_name||"")+" "+(data.last_name||"");
+
+document.getElementById("department").value=data.department;
+
+document.getElementById("position").value=data.position;
+
+}
+
+
+
+/******************************************
+AUTO COMPUTE HOURS
+******************************************/
+
+function computeHours(){
+
+const timeIn=
+document.getElementById("timeIn").value;
+
+const timeOut=
+document.getElementById("timeOut").value;
+
+if(timeIn===""||timeOut===""){
+
+return;
+
+}
+
+let start=new Date("2000-01-01 "+timeIn);
+
+let end=new Date("2000-01-01 "+timeOut);
+
+let diff=(end-start)/1000/60/60;
+
+if(diff<0){
+
+diff+=24;
+
+}
+
+document.getElementById("totalHours").value=
+diff.toFixed(2);
+
+}
+
+
+
+/******************************************
+TIME EVENTS
+******************************************/
+
+document
+.getElementById("timeIn")
+.addEventListener(
+"change",
+computeHours
+);
+
+document
+.getElementById("timeOut")
+.addEventListener(
+"change",
+computeHours
+);
+/******************************************
+UPLOAD ATTACHMENT
+******************************************/
+
+async function uploadAttachment(){
+
+const file=
+document.getElementById("attachment").files[0];
+
+if(!file){
+
+return "";
+
+}
+
+const filename=
+
+Date.now()+"_"+file.name;
+
+const {error}=await supabaseClient
+
+.storage
+
+.from("overtime-attachments")
+
+.upload(
+filename,
+file,
+{
+upsert:true
+}
+);
+
+if(error){
+
+alert(error.message);
+
+return "";
+
+}
+
+const publicURL=
+
+supabaseClient
+
+.storage
+
+.from("overtime-attachments")
+
+.getPublicUrl(filename);
+
+return publicURL.data.publicUrl;
+
+}
+/******************************************
+SAVE OVERTIME REQUEST
+******************************************/
+
+async function submitOvertime(){
+
+const attachmentURL=
+await uploadAttachment();
+
+const request={
+
+employee_id:employeeID,
+
+employee_number:
+document.getElementById("employeeNumber").value,
+
+employee_name:
+document.getElementById("employeeName").value,
+
+department:
+document.getElementById("department").value,
+
+position:
+document.getElementById("position").value,
+
+overtime_date:
+document.getElementById("overtimeDate").value,
+
+time_in:
+document.getElementById("timeIn").value,
+
+time_out:
+document.getElementById("timeOut").value,
+
+total_hours:
+Number(document.getElementById("totalHours").value),
+
+reason:
+document.getElementById("reason").value,
+
+attachment_url:
+attachmentURL,
+
+department_status:
+"Pending",
+
+hr_status:
+"Pending"
+
+};
+
+const {error}=await supabaseClient
+
+.from("employee_overtime")
+
+.insert([request]);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+alert("Overtime Request Submitted!");
+
+clearForm();
+
+loadMyRequests();
+
+}
+/******************************************
+CLEAR FORM
+******************************************/
+
+function clearForm(){
+
+document.getElementById("overtimeDate").value="";
+
+document.getElementById("timeIn").value="";
+
+document.getElementById("timeOut").value="";
+
+document.getElementById("totalHours").value="";
+
+document.getElementById("reason").value="";
+
+document.getElementById("attachment").value="";
+
+}
+document
+
+.getElementById("submitOTBtn")
+
+.addEventListener(
+
+"click",
+
+submitOvertime
+
+);
+
+</script>
+</HTML>

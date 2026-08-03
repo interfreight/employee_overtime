@@ -658,7 +658,7 @@ Action
 SUPABASE
 ******************************************/
 
-const SUPABASE_URL="https://tuihpvykuqbqnfyfepql.supabase.co/";
+const SUPABASE_URL="https://tuihpvykuqbqnfyfepql.supabase.co";
 
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWhwdnlrdXFicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
 
@@ -681,42 +681,55 @@ let employeeID=null;
 /******************************************
 LOAD EMPLOYEE INFORMATION
 ******************************************/
+async function loadEmployee(){
 
-async function loadEmployee(employeeNumber){
+    const currentUser =
+        JSON.parse(localStorage.getItem("currentUser"));
 
-const {data,error}=await supabaseClient
+    if(!currentUser){
 
-.from("employee_profiles")
+        alert("Please login first.");
 
-.select("*")
+        return;
 
-.eq("employee_number",employeeNumber)
+    }
 
-.single();
+    // USERS TABLE
+    document.getElementById("employeeName").value =
+        currentUser.full_name;
 
-if(error){
+    document.getElementById("department").value =
+        currentUser.department;
 
-alert(error.message);
+    document.getElementById("position").value =
+        currentUser.role;
 
-return;
+    employeeID = currentUser.id;
+
+    // EMPLOYEE PROFILE TABLE
+    const { data, error } =
+        await supabaseClient
+
+        .from("employee_profiles")
+
+        .select("employee_number")
+
+        .eq("user_id", currentUser.id)
+
+        .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    document.getElementById("employeeNumber").value =
+        data.employee_number;
 
 }
-
-employeeID=data.id;
-
-document.getElementById("employeeNumber").value=data.employee_number;
-
-document.getElementById("employeeName").value=
-
-(data.first_name||"")+" "+(data.last_name||"");
-
-document.getElementById("department").value=data.department;
-
-document.getElementById("position").value=data.position;
-
-}
-
-
 
 /******************************************
 AUTO COMPUTE HOURS
@@ -832,6 +845,38 @@ SAVE OVERTIME REQUEST
 
 async function submitOvertime(){
 
+  if(document.getElementById("overtimeDate").value==""){
+
+alert("Please select Overtime Date.");
+
+return;
+
+}
+
+if(document.getElementById("timeIn").value==""){
+
+alert("Please enter Time In.");
+
+return;
+
+}
+
+if(document.getElementById("timeOut").value==""){
+
+alert("Please enter Time Out.");
+
+return;
+
+}
+
+if(document.getElementById("reason").value.trim()==""){
+
+alert("Please enter the reason for overtime.");
+
+return;
+
+}
+  
 const attachmentURL=
 await uploadAttachment();
 
@@ -895,7 +940,6 @@ alert("Overtime Request Submitted!");
 
 clearForm();
 
-loadMyRequests();
 
 }
 /******************************************
@@ -929,5 +973,6 @@ submitOvertime
 
 );
 
+ loadEmployee();
 </script>
 </HTML>

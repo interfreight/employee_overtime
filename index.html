@@ -297,15 +297,7 @@ Overtime Request
 
 </a>
 
-<a href="#">
-
-<i class="fa fa-history"></i>
-
-My Requests
-
-</a>
-
-<a href="#">
+<a href="https://interfreight.github.io/employee_portal/" onclick="history.back(); return false;">
 
 <i class="fa fa-user"></i>
 
@@ -313,7 +305,7 @@ Profile
 
 </a>
 
-<a href="#">
+<a href="https://interfreight.github.io/login/" onclick="history.back(); return false;">
 
 <i class="fa fa-right-from-bracket"></i>
 
@@ -366,24 +358,6 @@ Overtime Request Form
 
 
 <div class="form-grid">
-
-<div class="form-group">
-
-<label>
-
-Employee Number
-
-</label>
-
-<input
-
-id="employeeNumber"
-
-readonly>
-
-</div>
-
-
 
 <div class="form-group">
 
@@ -721,8 +695,6 @@ async function loadEmployee(){
 
     }
 
-    document.getElementById("employeeNumber").value =
-        data.employee_number || "";
 
     document.getElementById("position").value =
         data.position || "";
@@ -882,9 +854,6 @@ const request={
 
 employee_id:employeeID,
 
-employee_number:
-document.getElementById("employeeNumber").value,
-
 employee_name:
 document.getElementById("employeeName").value,
 
@@ -938,6 +907,77 @@ alert("Overtime Request Submitted!");
 
 clearForm();
 
+loadMyRequests();
+
+
+}
+
+    async function loadMyRequests(){
+
+    const currentUser =
+        JSON.parse(localStorage.getItem("currentUser"));
+
+    const { data, error } = await supabaseClient
+
+        .from("employee_overtime")
+
+        .select("*")
+
+        .eq("employee_name", currentUser.full_name)
+
+        .order("created_at",{ascending:false});
+
+    if(error){
+
+        console.log(error);
+
+        return;
+
+    }
+
+    let html="";
+
+    data.forEach(row=>{
+
+        html+=`
+        <tr>
+
+            <td style="padding:12px">
+                ${row.overtime_date}
+            </td>
+
+            <td>
+                ${row.total_hours}
+            </td>
+
+            <td>
+                ${row.department_status}
+            </td>
+
+            <td>
+                ${row.department}
+            </td>
+
+            <td>
+                ${row.hr_status}
+            </td>
+
+            <td>
+                ${
+                    row.attachment_url
+                    ?
+                    `<a href="${row.attachment_url}" target="_blank">View</a>`
+                    :
+                    "-"
+                }
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+    document.getElementById("requestTable").innerHTML = html;
 
 }
 /******************************************
@@ -971,6 +1011,8 @@ submitOvertime
 
 );
 
- loadEmployee();
+loadEmployee();
+
+loadMyRequests();
 </script>
 </HTML>

@@ -412,57 +412,18 @@ readonly>
 </div>
 
 
-
 <div class="form-group">
-
-<label>
-
-Overtime Date
-
-</label>
-
+<label>Date & Time In</label>
 <input
-
-type="date"
-
-id="overtimeDate">
-
-</div>
-
-
-
-<div class="form-group">
-
-<label>
-
-Time In
-
-</label>
-
-<input
-
-type="time"
-
+type="datetime-local"
 id="timeIn">
-
 </div>
 
-
-
 <div class="form-group">
-
-<label>
-
-Time Out
-
-</label>
-
+<label>Date & Time Out</label>
 <input
-
-type="time"
-
+type="datetime-local"
 id="timeOut">
-
 </div>
 
 
@@ -791,40 +752,40 @@ Delete
 /******************************************
 AUTO COMPUTE HOURS
 ******************************************/
-
 function computeHours(){
 
-const timeIn=
-document.getElementById("timeIn").value;
+    const timeIn =
+        document.getElementById("timeIn").value;
 
-const timeOut=
-document.getElementById("timeOut").value;
+    const timeOut =
+        document.getElementById("timeOut").value;
 
-if(timeIn===""||timeOut===""){
+    if(!timeIn || !timeOut){
 
-return;
+        document.getElementById("totalHours").value = "";
+        return;
+
+    }
+
+    const start = new Date(timeIn);
+    const end = new Date(timeOut);
+
+    let hours = (end - start) / 1000 / 60 / 60;
+
+    if(hours <= 0){
+
+        alert("Time Out must be later than Time In.");
+
+        document.getElementById("totalHours").value = "";
+
+        return;
+
+    }
+
+    document.getElementById("totalHours").value =
+        hours.toFixed(2);
 
 }
-
-let start=new Date("2000-01-01 "+timeIn);
-
-let end=new Date("2000-01-01 "+timeOut);
-
-let diff=(end-start)/1000/60/60;
-
-if(diff<0){
-
-diff+=24;
-
-}
-
-document.getElementById("totalHours").value=
-diff.toFixed(2);
-
-}
-
-
-
 /******************************************
 TIME EVENTS
 ******************************************/
@@ -902,7 +863,7 @@ SAVE OVERTIME REQUEST
 
 async function submitOvertime(){
 
-  if(document.getElementById("overtimeDate").value==""){
+if(document.getElementById("timeIn").value==""){
 
 alert("Please select Overtime Date.");
 
@@ -950,14 +911,14 @@ document.getElementById("department").value,
 position:
 document.getElementById("position").value,
 
-overtime_date:
-document.getElementById("overtimeDate").value,
-
 time_in:
 document.getElementById("timeIn").value,
 
 time_out:
 document.getElementById("timeOut").value,
+
+overtime_date:
+document.getElementById("timeIn").value.substring(0,10),
 
 total_hours:
 Number(document.getElementById("totalHours").value),
@@ -1151,7 +1112,6 @@ CLEAR FORM
 
 function clearForm(){
 
-document.getElementById("overtimeDate").value="";
 
 document.getElementById("timeIn").value="";
 

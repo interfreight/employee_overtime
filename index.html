@@ -669,33 +669,27 @@ async function loadMyRequests(){
     const currentUser =
         JSON.parse(localStorage.getItem("currentUser"));
 
-    if(!currentUser) return;
-
-    const {data,error} = await supabaseClient
+    const {data,error}=await supabaseClient
         .from("employee_overtime")
         .select("*")
         .eq("employee_id", currentUser.id)
         .order("created_at",{ascending:false});
 
     if(error){
-
         console.log(error);
-
         return;
-
     }
 
-    const table =
-        document.getElementById("requestTable");
+    const table=document.getElementById("requestTable");
 
     table.innerHTML="";
 
     data.forEach(row=>{
 
-        table.innerHTML += `
+        table.innerHTML+=`
         <tr>
 
-            <td style="padding:10px;">
+            <td style="padding:12px">
                 ${row.overtime_date}
             </td>
 
@@ -708,40 +702,41 @@ async function loadMyRequests(){
             </td>
 
             <td>
-                ${row.department_status}
+                ${row.department}
             </td>
 
             <td>
                 ${row.hr_status}
             </td>
 
-           <td>
+            <td>
 
-${row.department_status==="Pending" && row.hr_status==="Pending"
+            ${
+            row.department_status==="Pending" &&
+            row.hr_status==="Pending"
 
-? `
+            ?
 
-<button onclick="editRequest('${row.id}')">
+            `
+            <button class="btn btn-primary"
+            onclick="editRequest('${row.id}')">
+            Edit
+            </button>
 
-Edit
+            <button class="btn"
+            style="background:red;color:white"
+            onclick="deleteRequest('${row.id}')">
+            Delete
+            </button>
+            `
 
-</button>
+            :
 
-<button onclick="deleteRequest('${row.id}')">
+            `<span style="color:green;font-weight:bold;">Approved</span>`
 
-Delete
+            }
 
-</button>
-
-`
-
-:
-
-`Approved`
-
-}
-
-</td>
+            </td>
 
         </tr>
         `;
@@ -978,134 +973,7 @@ loadMyRequests();
 
 }
 
-    async function loadMyRequests(){
 
-    const currentUser =
-        JSON.parse(localStorage.getItem("currentUser"));
-
-    const { data, error } = await supabaseClient
-
-        .from("employee_overtime")
-
-        .select("*")
-
-        .eq("employee_name", currentUser.full_name)
-
-        .order("created_at",{ascending:false});
-
-    if(error){
-
-        console.log(error);
-
-        return;
-
-    }
-
-    let html="";
-
-    data.forEach(row=>{
-
-        html+=`
-        <tr>
-
-            <td style="padding:12px">
-                ${row.overtime_date}
-            </td>
-
-            <td>
-                ${row.total_hours}
-            </td>
-
-            <td>
-                ${row.department_status}
-            </td>
-
-            <td>
-                ${row.department}
-            </td>
-
-            <td>
-                ${row.hr_status}
-            </td>
-
-            <td>
-                ${
-                    row.attachment_url
-                    ?
-                    `<a href="${row.attachment_url}" target="_blank">View</a>`
-                    :
-                    "-"
-                }
-            </td>
-
-        </tr>
-        `;
-
-    });
-
-    document.getElementById("requestTable").innerHTML = html;
-
-}
-    let editingID = null;
-
-async function editRequest(id){
-
-    const {data,error} = await supabaseClient
-
-    .from("employee_overtime")
-
-    .select("*")
-
-    .eq("id",id)
-
-    .single();
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-
-    }
-
-    editingID=id;
-
-    document.getElementById("overtimeDate").value=data.overtime_date;
-
-    document.getElementById("timeIn").value=data.time_in;
-
-    document.getElementById("timeOut").value=data.time_out;
-
-    document.getElementById("totalHours").value=data.total_hours;
-
-    document.getElementById("reason").value=data.reason;
-
-}
-    async function deleteRequest(id){
-
-    if(!confirm("Delete this overtime request?"))
-
-        return;
-
-    const {error}=await supabaseClient
-
-    .from("employee_overtime")
-
-    .delete()
-
-    .eq("id",id);
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-
-    }
-
-    loadMyRequests();
-
-}
 /******************************************
 CLEAR FORM
 ******************************************/

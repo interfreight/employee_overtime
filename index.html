@@ -674,7 +674,7 @@ async function loadMyRequests(){
         .from("employee_overtime")
         .select("*")
         .eq("employee_name", currentUser.full_name)
-        .order("created_at",{ascending:false});
+        .order("overtime_date",{ascending:false})
 
     if(error){
         console.log(error);
@@ -706,8 +706,8 @@ async function loadMyRequests(){
             <td>
 
             ${
-                row.department_status === "Pending" &&
-                row.hr_status === "Pending"
+                (row.department_status || "").toLowerCase() === "pending" &&
+(row.hr_status || "").toLowerCase() === "pending"
 
                 ?
 
@@ -754,9 +754,11 @@ return;
 }
 
 editingID=id;
+document.getElementById("timeIn").value =
+data.overtime_date + "T" + data.time_in;
 
-document.getElementById("timeIn").value=data.time_in;
-document.getElementById("timeOut").value=data.time_out;
+document.getElementById("timeOut").value =
+data.overtime_date + "T" + data.time_out;
 document.getElementById("reason").value=data.reason;
 document.getElementById("totalHours").value=data.total_hours;
 

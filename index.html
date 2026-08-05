@@ -1005,21 +1005,25 @@ async function editRequest(id){
         return;
     }
 
-    editingID = id;
+    console.log("Record from Supabase:", data);
 
+    editingID = id;
     currentAttachment = data.attachment || "";
 
-    document.getElementById("timeIn").value =
-        data.overtime_date + "T" + data.time_in.substring(0,5);
+    const timeIn =
+        data.overtime_date + "T" + String(data.time_in).substring(0,5);
 
-    document.getElementById("timeOut").value =
-        data.overtime_date + "T" + data.time_out.substring(0,5);
+    const timeOut =
+        data.overtime_date + "T" + String(data.time_out).substring(0,5);
 
-    document.getElementById("reason").value =
-        data.reason;
+    console.log("Time In:", timeIn);
+    console.log("Time Out:", timeOut);
 
-    document.getElementById("totalHours").value =
-        data.total_hours;
+    document.getElementById("timeIn").value = timeIn;
+    document.getElementById("timeOut").value = timeOut;
+
+    document.getElementById("reason").value = data.reason;
+    document.getElementById("totalHours").value = data.total_hours;
 
     document.getElementById("submitOTBtn").innerHTML =
         '<i class="fa fa-save"></i> Update Request';
@@ -1029,6 +1033,7 @@ async function editRequest(id){
         behavior: "smooth"
     });
 
+    computeHours();
 }
 /******************************************
 DELETE REQUEST

@@ -958,53 +958,27 @@ const dateTimeOut = document.getElementById("timeOut").value;
 
 const request = {
 
-    employee_name:
-    document.getElementById("employeeName").value,
+    employee_name: document.getElementById("employeeName").value,
 
-    department:
-    document.getElementById("department").value,
+    department: document.getElementById("department").value,
 
-    position:
-    document.getElementById("position").value,
+    position: document.getElementById("position").value,
 
-    overtime_date:
-    dateTimeIn.split("T")[0],
+    overtime_date: dateTimeIn.split("T")[0],
 
-    time_in:
-    dateTimeIn.split("T")[1],
+    time_in: dateTimeIn.split("T")[1],
 
-    time_out:
-    dateTimeOut.split("T")[1],
+    time_out: dateTimeOut.split("T")[1],
 
-    total_hours:
-    Number(document.getElementById("totalHours").value),
+    total_hours: Number(document.getElementById("totalHours").value),
 
-    reason:
-    document.getElementById("reason").value,
+    reason: document.getElementById("reason").value,
 
-    attachment:
-    attachmentURL,
+    attachment: attachmentURL,
 
-    department_status:"Pending",
+    department_status: "Pending",
 
-    hr_status:"Pending"
-
-};
-
-total_hours:
-Number(document.getElementById("totalHours").value),
-
-reason:
-document.getElementById("reason").value,
-
-attachment:
-attachmentURL,
-
-department_status:
-"Pending",
-
-hr_status:
-"Pending"
+    hr_status: "Pending"
 
 };
 

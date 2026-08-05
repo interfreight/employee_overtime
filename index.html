@@ -780,60 +780,50 @@ function addRequestRow(row){
 
 (row.hr_status || "").toLowerCase()=="pending";
 
-    table.innerHTML += `
-    <tr>
+   table.innerHTML += `
+<tr>
 
-        <td style="padding:12px">
-            ${row.overtime_date}
-        </td>
+    <td style="padding:12px">
+        ${row.overtime_date}
+    </td>
 
-        <td>
-            ${row.total_hours}
-        </td>
+    <td>
+        ${row.total_hours}
+    </td>
 
-        <td>
-            ${row.department_status}
-        </td>
+    <td>
+        ${row.department_status}
+    </td>
 
-        <td>
-            ${row.department}
-        </td>
+    <td>
+        ${row.hr_status}
+    </td>
 
-        <td>
-            ${row.hr_status}
-        </td>
+    <td>
+        ${row.department}
+    </td>
 
-        <td>
-
-            ${
-            canEdit ?
-
-            `
-            <button
-            class="btn btn-primary"
-            onclick="editRequest('${row.id}')">
+    <td>
+        ${
+        canEdit
+        ?
+        `
+        <button class="btn btn-primary" onclick="editRequest('${row.id}')">
             Edit
-            </button>
+        </button>
 
-            <button
-            class="btn"
-            style="background:red;color:white"
-            onclick="deleteRequest('${row.id}')">
+        <button class="btn" style="background:red;color:white"
+        onclick="deleteRequest('${row.id}')">
             Delete
-            </button>
-            `
+        </button>
+        `
+        :
+        `Approved`
+        }
+    </td>
 
-            :
-
-            `Approved`
-
-            }
-
-        </td>
-
-    </tr>
-    `;
-
+</tr>
+`;
 }
 /******************************************
 LOAD MY REQUESTS

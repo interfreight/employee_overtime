@@ -982,8 +982,9 @@ alert(editingID ? "Request Updated Successfully!" : "Request Submitted Successfu
 
 clearForm();
 
-await loadMyRequests();   // Refresh the table
-
+await loadMyRequests(); 
+    // Refresh the table
+}
 /******************************************
 EDIT REQUEST
 ******************************************/
@@ -1047,10 +1048,11 @@ async function deleteRequest(id){
 
     alert("Request deleted successfully.");
 
-    await loadMyRequests();   // Refresh the table
+    await loadMyRequests();
+
 }
-}
-  document
+
+document
 .getElementById("submitOTBtn")
 .addEventListener(
     "click",
@@ -1065,6 +1067,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 </script>
+
 </body>
 </html>
-    

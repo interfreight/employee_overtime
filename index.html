@@ -609,7 +609,8 @@ SUPABASE_KEY
 CURRENT EMPLOYEE
 ******************************************/
 
-let employeeID=null;
+let employeeID = null;
+let editingID = null;
 
 
 
@@ -712,8 +713,8 @@ async function loadMyRequests(){
             <td>
 
             ${
-            row.department_status==="Pending" &&
-            row.hr_status==="Pending"
+            row.department_status != "Approved" &&
+row.hr_status != "Approved"
 
             ?
 
@@ -742,6 +743,59 @@ async function loadMyRequests(){
         `;
 
     });
+
+}
+    /******************************************
+EDIT REQUEST
+******************************************/
+async function editRequest(id){
+
+const {data,error}=await supabaseClient
+.from("employee_overtime")
+.select("*")
+.eq("id",id)
+.single();
+
+if(error){
+alert(error.message);
+return;
+}
+
+editingID=id;
+
+document.getElementById("timeIn").value=data.time_in;
+document.getElementById("timeOut").value=data.time_out;
+document.getElementById("reason").value=data.reason;
+document.getElementById("totalHours").value=data.total_hours;
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+    /******************************************
+DELETE REQUEST
+******************************************/
+async function deleteRequest(id){
+
+if(!confirm("Delete this overtime request?")){
+return;
+}
+
+const {error}=await supabaseClient
+.from("employee_overtime")
+.delete()
+.eq("id",id);
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+loadMyRequests();
 
 }
 /******************************************

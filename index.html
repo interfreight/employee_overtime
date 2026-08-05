@@ -670,73 +670,63 @@ async function loadMyRequests(){
     const currentUser =
         JSON.parse(localStorage.getItem("currentUser"));
 
-    const {data,error}=await supabaseClient
+    const { data, error } = await supabaseClient
         .from("employee_overtime")
         .select("*")
-        .eq("employee_id", currentUser.id)
+        .eq("employee_name", currentUser.full_name)
         .order("created_at",{ascending:false});
 
-   if(error){
-    console.error(error);
-    alert(error.message);
-    return;
-}
+    if(error){
+        console.log(error);
+        alert(error.message);
+        return;
+    }
 
-console.log(data);
     const table=document.getElementById("requestTable");
 
     table.innerHTML="";
 
     data.forEach(row=>{
 
-        table.innerHTML+=`
+        table.innerHTML += `
         <tr>
 
             <td style="padding:12px">
                 ${row.overtime_date}
             </td>
 
-            <td>
-                ${row.total_hours}
-            </td>
+            <td>${row.total_hours}</td>
 
-            <td>
-                ${row.department_status}
-            </td>
+            <td>${row.department_status}</td>
 
-            <td>
-                ${row.department}
-            </td>
+            <td>${row.department}</td>
 
-            <td>
-                ${row.hr_status}
-            </td>
+            <td>${row.hr_status}</td>
 
             <td>
 
             ${
-            row.department_status != "Approved" &&
-row.hr_status != "Approved"
+                row.department_status === "Pending" &&
+                row.hr_status === "Pending"
 
-            ?
+                ?
 
-            `
-            <button class="btn btn-primary"
-            onclick="editRequest('${row.id}')">
-            Edit
-            </button>
+                `
+                <button class="btn btn-primary"
+                onclick="editRequest('${row.id}')">
+                Edit
+                </button>
 
-            <button class="btn"
-            style="background:red;color:white"
-            onclick="deleteRequest('${row.id}')">
-            Delete
-            </button>
-            `
+                <button class="btn"
+                style="background:red;color:white"
+                onclick="deleteRequest('${row.id}')">
+                Delete
+                </button>
+                `
 
-            :
+                :
 
-            `<span style="color:green;font-weight:bold;">Approved</span>`
-
+                `<span style="color:green;font-weight:bold;">Approved</span>`
             }
 
             </td>
@@ -951,7 +941,6 @@ await uploadAttachment();
 
 const request={
 
-employee_id:employeeID,
 
 employee_name:
 document.getElementById("employeeName").value,

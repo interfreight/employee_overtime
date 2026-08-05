@@ -527,45 +527,19 @@ border-collapse:collapse;">
 
 <thead>
 
-<tr
-style="background:#0B4F9F;
-color:white;">
+<tr style="background:#0B4F9F;color:white;">
 
-<th style="padding:12px;">
+<th style="padding:12px;">Date</th>
 
-Date
+<th>Hours</th>
 
-</th>
+<th>Department Status</th>
 
-<th>
+<th>HR Status</th>
 
-Hours
+<th>Department</th>
 
-</th>
-
-<th>
-
-Status
-
-</th>
-
-<th>
-
-Department
-
-</th>
-
-<th>
-
-HR
-
-</th>
-
-<th>
-
-Action
-
-</th>
+<th>Action</th>
 
 </tr>
 
@@ -588,247 +562,123 @@ Action
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
 /******************************************
 SUPABASE
 ******************************************/
 
-const SUPABASE_URL="https://tuihpvykuqbqnfyfepql.supabase.co";
+const SUPABASE_URL =
+"https://tuihpvykuqbqnfyfepql.supabase.co";
 
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWhwdnlrdXFicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWhwdnlrdXFicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
 
-const supabaseClient=
+const supabaseClient =
 supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
-
-
 /******************************************
-CURRENT EMPLOYEE
+GLOBAL VARIABLES
 ******************************************/
 
 let employeeID = null;
 let editingID = null;
-
-
+let currentAttachment = "";
 
 /******************************************
-LOAD EMPLOYEE INFORMATION
+LOAD EMPLOYEE
 ******************************************/
+
 async function loadEmployee(){
 
     const currentUser =
-        JSON.parse(localStorage.getItem("currentUser"));
+    JSON.parse(localStorage.getItem("currentUser"));
 
     if(!currentUser){
 
         alert("Please login first.");
 
+        window.location.href =
+        "https://interfreight.github.io/login/";
+
         return;
 
     }
-
-    // Employee Name comes from USERS table
-    document.getElementById("employeeName").value =
-        currentUser.full_name;
-
-    // Department comes from USERS table
-    document.getElementById("department").value =
-        currentUser.department;
 
     employeeID = currentUser.id;
 
-    // Employee Number and Position come from employee_profiles
-    const { data, error } = await supabaseClient
-        .from("employee_profiles")
-        .select("employee_number, position")
-        .eq("user_id", currentUser.id)
-        .single();
+    document.getElementById("employeeName").value =
+    currentUser.full_name || "";
+
+    document.getElementById("department").value =
+    currentUser.department || "";
+
+    const {data,error} =
+    await supabaseClient
+    .from("employee_profiles")
+    .select("position")
+    .eq("user_id",currentUser.id)
+    .single();
 
     if(error){
 
         console.log(error);
 
-        alert(error.message);
+        document.getElementById("position").value="";
 
         return;
 
     }
-
 
     document.getElementById("position").value =
-        data.position || "";
+    data.position || "";
 
 }
+
 /******************************************
-LOAD MY REQUESTS
+COMPUTE HOURS
 ******************************************/
-async function loadMyRequests(){
 
-    const currentUser =
-        JSON.parse(localStorage.getItem("currentUser"));
-
-    const { data, error } = await supabaseClient
-        .from("employee_overtime")
-        .select("*")
-        .eq("employee_name", currentUser.full_name)
-        .order("overtime_date",{ascending:false})
-
-    if(error){
-        console.log(error);
-        alert(error.message);
-        return;
-    }
-
-    const table=document.getElementById("requestTable");
-
-    table.innerHTML="";
-
-    data.forEach(row=>{
-
-        table.innerHTML += `
-        <tr>
-
-            <td style="padding:12px">
-                ${row.overtime_date}
-            </td>
-
-            <td>${row.total_hours}</td>
-
-            <td>${row.department_status}</td>
-
-            <td>${row.department}</td>
-
-            <td>${row.hr_status}</td>
-
-            <td>
-
-            ${
-                (row.department_status || "").toLowerCase() === "pending" &&
-(row.hr_status || "").toLowerCase() === "pending"
-
-                ?
-
-                `
-                <button class="btn btn-primary"
-                onclick="editRequest('${row.id}')">
-                Edit
-                </button>
-
-                <button class="btn"
-                style="background:red;color:white"
-                onclick="deleteRequest('${row.id}')">
-                Delete
-                </button>
-                `
-
-                :
-
-                `<span style="color:green;font-weight:bold;">Approved</span>`
-            }
-
-            </td>
-
-        </tr>
-        `;
-
-    });
-
-}
-    /******************************************
-EDIT REQUEST
-******************************************/
-async function editRequest(id){
-
-const {data,error}=await supabaseClient
-.from("employee_overtime")
-.select("*")
-.eq("id",id)
-.single();
-
-if(error){
-alert(error.message);
-return;
-}
-
-editingID=id;
-document.getElementById("timeIn").value =
-data.overtime_date + "T" + data.time_in;
-
-document.getElementById("timeOut").value =
-data.overtime_date + "T" + data.time_out;
-document.getElementById("reason").value=data.reason;
-document.getElementById("totalHours").value=data.total_hours;
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-}
-    /******************************************
-DELETE REQUEST
-******************************************/
-async function deleteRequest(id){
-
-if(!confirm("Delete this overtime request?")){
-return;
-}
-
-const {error}=await supabaseClient
-.from("employee_overtime")
-.delete()
-.eq("id",id);
-
-if(error){
-
-alert(error.message);
-return;
-
-}
-
-loadMyRequests();
-
-}
-/******************************************
-AUTO COMPUTE HOURS
-******************************************/
 function computeHours(){
 
     const timeIn =
-        document.getElementById("timeIn").value;
+    document.getElementById("timeIn").value;
 
     const timeOut =
-        document.getElementById("timeOut").value;
+    document.getElementById("timeOut").value;
 
     if(!timeIn || !timeOut){
 
-        document.getElementById("totalHours").value = "";
-        return;
-
-    }
-
-    const start = new Date(timeIn);
-    const end = new Date(timeOut);
-
-    let hours = (end - start) / 1000 / 60 / 60;
-
-    if(hours <= 0){
-
-        alert("Time Out must be later than Time In.");
-
-        document.getElementById("totalHours").value = "";
+        document.getElementById("totalHours").value="";
 
         return;
 
     }
+
+    let start =
+    new Date(timeIn);
+
+    let end =
+    new Date(timeOut);
+
+    if(end < start){
+
+        end.setDate(end.getDate()+1);
+
+    }
+
+    const diff =
+    end-start;
+
+    const hrs =
+    diff/1000/60/60;
 
     document.getElementById("totalHours").value =
-        hours.toFixed(2);
+    hrs.toFixed(2);
 
 }
+
 /******************************************
 TIME EVENTS
 ******************************************/
@@ -846,183 +696,52 @@ document
 "change",
 computeHours
 );
+
 /******************************************
 UPLOAD ATTACHMENT
 ******************************************/
 
 async function uploadAttachment(){
 
-const file=
-document.getElementById("attachment").files[0];
+    const file =
+    document.getElementById("attachment").files[0];
 
-if(!file){
+    if(!file){
 
-return "";
+        return currentAttachment;
 
-}
+    }
 
-const filename=
+    const fileName =
+    Date.now()+"_"+file.name;
 
-Date.now()+"_"+file.name;
+    const {error} =
+    await supabaseClient.storage
+    .from("overtime-attachments")
+    .upload(
+        fileName,
+        file,
+        {
+            upsert:true
+        }
+    );
 
-const {error}=await supabaseClient
+    if(error){
 
-.storage
+        alert(error.message);
 
-.from("overtime-attachments")
+        return "";
 
-.upload(
-filename,
-file,
-{
-upsert:true
-}
-);
+    }
 
-if(error){
+    const {data} =
+    supabaseClient.storage
+    .from("overtime-attachments")
+    .getPublicUrl(fileName);
 
-alert(error.message);
-
-return "";
-
-}
-
-const publicURL=
-
-supabaseClient
-
-.storage
-
-.from("overtime-attachments")
-
-.getPublicUrl(filename);
-
-return publicURL.data.publicUrl;
+    return data.publicUrl;
 
 }
-/******************************************
-SAVE OVERTIME REQUEST
-******************************************/
-
-async function submitOvertime(){
-
-if(document.getElementById("timeIn").value==""){
-
-alert("Please select Overtime Date.");
-
-return;
-
-}
-
-if(document.getElementById("timeIn").value==""){
-
-alert("Please enter Time In.");
-
-return;
-
-}
-
-if(document.getElementById("timeOut").value==""){
-
-alert("Please enter Time Out.");
-
-return;
-
-}
-
-if(document.getElementById("reason").value.trim()==""){
-
-alert("Please enter the reason for overtime.");
-
-return;
-
-}
-  
-const attachmentURL=
-await uploadAttachment();
-
-const request={
-
-
-employee_name:
-document.getElementById("employeeName").value,
-
-department:
-document.getElementById("department").value,
-
-position:
-document.getElementById("position").value,
-
-const dateTimeIn = document.getElementById("timeIn").value;
-const dateTimeOut = document.getElementById("timeOut").value;
-
-const request = {
-
-    employee_name: document.getElementById("employeeName").value,
-
-    department: document.getElementById("department").value,
-
-    position: document.getElementById("position").value,
-
-    overtime_date: dateTimeIn.split("T")[0],
-
-    time_in: dateTimeIn.split("T")[1],
-
-    time_out: dateTimeOut.split("T")[1],
-
-    total_hours: Number(document.getElementById("totalHours").value),
-
-    reason: document.getElementById("reason").value,
-
-    attachment: attachmentURL,
-
-    department_status: "Pending",
-
-    hr_status: "Pending"
-
-};
-
-let error;
-
-if(editingID){
-
-    ({error} = await supabaseClient
-
-    .from("employee_overtime")
-
-    .update(request)
-
-    .eq("id",editingID));
-
-    editingID=null;
-
-}else{
-
-    ({error} = await supabaseClient
-
-    .from("employee_overtime")
-
-    .insert([request]));
-
-}
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-alert("Overtime Request Submitted!");
-
-clearForm();
-
-loadMyRequests();
-
-
-}
-
 
 /******************************************
 CLEAR FORM
@@ -1030,33 +749,362 @@ CLEAR FORM
 
 function clearForm(){
 
+    editingID = null;
 
-document.getElementById("timeIn").value="";
+    currentAttachment = "";
 
-document.getElementById("timeOut").value="";
+    document.getElementById("timeIn").value="";
 
-document.getElementById("totalHours").value="";
+    document.getElementById("timeOut").value="";
 
-document.getElementById("reason").value="";
+    document.getElementById("totalHours").value="";
 
-document.getElementById("attachment").value="";
+    document.getElementById("reason").value="";
+
+    document.getElementById("attachment").value="";
+
+    document.getElementById("submitOTBtn").innerHTML =
+    '<i class="fa fa-paper-plane"></i> Submit Overtime Request';
 
 }
-document
+function addRequestRow(row){
 
+    const table =
+    document.getElementById("requestTable");
+
+   const canEdit =
+
+(row.department_status || "").toLowerCase()=="pending"
+
+&&
+
+(row.hr_status || "").toLowerCase()=="pending";
+
+    table.innerHTML += `
+    <tr>
+
+        <td style="padding:12px">
+            ${row.overtime_date}
+        </td>
+
+        <td>
+            ${row.total_hours}
+        </td>
+
+        <td>
+            ${row.department_status}
+        </td>
+
+        <td>
+            ${row.department}
+        </td>
+
+        <td>
+            ${row.hr_status}
+        </td>
+
+        <td>
+
+            ${
+            canEdit ?
+
+            `
+            <button
+            class="btn btn-primary"
+            onclick="editRequest('${row.id}')">
+            Edit
+            </button>
+
+            <button
+            class="btn"
+            style="background:red;color:white"
+            onclick="deleteRequest('${row.id}')">
+            Delete
+            </button>
+            `
+
+            :
+
+            `Approved`
+
+            }
+
+        </td>
+
+    </tr>
+    `;
+
+}
+/******************************************
+LOAD MY REQUESTS
+******************************************/
+
+async function loadMyRequests(){
+
+    const currentUser =
+    JSON.parse(localStorage.getItem("currentUser"));
+
+    const {data,error} =
+    await supabaseClient
+    .from("employee_overtime")
+    .select("*")
+    .eq("employee_name",currentUser.full_name)
+    .order("overtime_date",{ascending:false});
+
+    if(error){
+
+        console.log(error);
+
+        return;
+
+    }
+
+
+console.log(data);
+    const table =
+    document.getElementById("requestTable");
+
+    table.innerHTML="";
+
+    if(data.length===0){
+
+        table.innerHTML=
+        `<tr>
+            <td colspan="6"
+            style="padding:20px;text-align:center;">
+            No overtime requests found.
+            </td>
+        </tr>`;
+
+        return;
+
+    }
+
+   data.forEach(function(row){
+
+    addRequestRow(row);
+
+});
+
+}
+
+    /******************************************
+SUBMIT / UPDATE OVERTIME
+******************************************/
+
+async function submitOvertime(){
+
+    if(!document.getElementById("timeIn").value){
+
+        alert("Please select Time In.");
+        return;
+
+    }
+
+    if(!document.getElementById("timeOut").value){
+
+        alert("Please select Time Out.");
+        return;
+
+    }
+
+    if(document.getElementById("reason").value.trim()==""){
+
+        alert("Please enter the reason.");
+        return;
+
+    }
+
+    const attachmentURL =
+    await uploadAttachment();
+
+    const dateTimeIn =
+    document.getElementById("timeIn").value;
+
+    const dateTimeOut =
+    document.getElementById("timeOut").value;
+
+   const request = {
+
+    employee_id: employeeID,
+
+    employee_name:
+    document.getElementById("employeeName").value,
+
+    department:
+    document.getElementById("department").value,
+
+    position:
+    document.getElementById("position").value,
+
+    overtime_date:
+    dateTimeIn.split("T")[0],
+
+    time_in:
+    dateTimeIn.split("T")[1],
+
+    time_out:
+    dateTimeOut.split("T")[1],
+
+    total_hours:
+    Number(document.getElementById("totalHours").value),
+
+    reason:
+    document.getElementById("reason").value,
+
+    attachment:
+    attachmentURL,
+
+    department_status:"Pending",
+
+    hr_status:"Pending"
+
+};
+
+    let error;
+
+    if(editingID){
+
+        ({error}=await supabaseClient
+
+        .from("employee_overtime")
+
+        .update(request)
+
+        .eq("id",editingID));
+
+    }
+
+    else{
+
+        ({error}=await supabaseClient
+
+        .from("employee_overtime")
+
+        .insert([request]));
+
+    }
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    alert("Saved Successfully.");
+
+    clearForm();
+
+    loadMyRequests();
+
+}
+
+/******************************************
+EDIT REQUEST
+******************************************/
+
+async function editRequest(id){
+
+    const {data,error}=await supabaseClient
+
+    .from("employee_overtime")
+
+    .select("*")
+
+    .eq("id",id)
+
+    .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    editingID=id;
+
+    currentAttachment=data.attachment || "";
+
+    document.getElementById("timeIn").value=
+
+    data.overtime_date+"T"+data.time_in.substring(0,5);
+
+    document.getElementById("timeOut").value=
+
+    data.overtime_date+"T"+data.time_out.substring(0,5);
+
+    document.getElementById("reason").value=
+
+    data.reason;
+
+    document.getElementById("totalHours").value=
+
+    data.total_hours;
+
+    document.getElementById("submitOTBtn").innerHTML=
+
+    '<i class="fa fa-save"></i> Update Request';
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+}
+
+/******************************************
+DELETE REQUEST
+******************************************/
+
+async function deleteRequest(id){
+
+    if(!confirm("Delete this request?")){
+
+        return;
+
+    }
+
+    const {error}=await supabaseClient
+
+    .from("employee_overtime")
+
+    .delete()
+
+    .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    loadMyRequests();
+
+}
+  document
 .getElementById("submitOTBtn")
-
 .addEventListener(
-
-"click",
-
-submitOvertime
-
+    "click",
+    submitOvertime
 );
 
-(async () => {
+document.addEventListener("DOMContentLoaded", async () => {
+
     await loadEmployee();
+
     await loadMyRequests();
-})();
+
+});
 </script>
-</HTML>
+</body>
+</html>
+    

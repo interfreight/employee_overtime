@@ -913,7 +913,11 @@ async function submitOvertime(){
 
     const dateTimeOut =
     document.getElementById("timeOut").value;
+console.log("dateTimeIn =", dateTimeIn);
+console.log("dateTimeOut =", dateTimeOut);
 
+console.log("time_in =", dateTimeIn.split("T")[1]);
+console.log("time_out =", dateTimeOut.split("T")[1]);
    const request = {
 
     employee_name:

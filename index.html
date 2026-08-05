@@ -1000,42 +1000,39 @@ async function editRequest(id){
         .eq("id", id)
         .single();
 
-    console.log(data);
-
     if(error){
         alert(error.message);
         return;
     }
 
-    console.log("Record from Supabase:", data);
+    console.log("FULL RECORD");
+    console.log(data);
+
+    console.log("time_in =", data.time_in);
+    console.log("time_out =", data.time_out);
 
     editingID = id;
     currentAttachment = data.attachment || "";
 
-    const timeIn =
-        data.overtime_date + "T" + String(data.time_in).substring(0,5);
+    document.getElementById("timeIn").value =
+        `${data.overtime_date}T${String(data.time_in).slice(0,5)}`;
 
-    const timeOut =
-        data.overtime_date + "T" + String(data.time_out).substring(0,5);
+    document.getElementById("timeOut").value =
+        `${data.overtime_date}T${String(data.time_out).slice(0,5)}`;
 
-    console.log("Time In:", timeIn);
-    console.log("Time Out:", timeOut);
+    document.getElementById("reason").value =
+        data.reason;
 
-    document.getElementById("timeIn").value = timeIn;
-    document.getElementById("timeOut").value = timeOut;
-
-    document.getElementById("reason").value = data.reason;
-    document.getElementById("totalHours").value = data.total_hours;
+    document.getElementById("totalHours").value =
+        data.total_hours;
 
     document.getElementById("submitOTBtn").innerHTML =
         '<i class="fa fa-save"></i> Update Request';
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
     computeHours();
+
+    console.log("INPUT timeIn =", document.getElementById("timeIn").value);
+    console.log("INPUT timeOut =", document.getElementById("timeOut").value);
 }
 /******************************************
 DELETE REQUEST

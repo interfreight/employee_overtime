@@ -676,11 +676,13 @@ async function loadMyRequests(){
         .eq("employee_id", currentUser.id)
         .order("created_at",{ascending:false});
 
-    if(error){
-        console.log(error);
-        return;
-    }
+   if(error){
+    console.error(error);
+    alert(error.message);
+    return;
+}
 
+console.log(data);
     const table=document.getElementById("requestTable");
 
     table.innerHTML="";
@@ -1058,8 +1060,9 @@ submitOvertime
 
 );
 
-loadEmployee();
-
-loadMyRequests();
+(async () => {
+    await loadEmployee();
+    await loadMyRequests();
+})();
 </script>
 </HTML>

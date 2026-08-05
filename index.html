@@ -1000,6 +1000,8 @@ async function editRequest(id){
         .eq("id", id)
         .single();
 
+    console.log(data);
+
     if(error){
         alert(error.message);
         return;

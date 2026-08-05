@@ -987,61 +987,44 @@ await loadMyRequests();   // Refresh the table
 /******************************************
 EDIT REQUEST
 ******************************************/
-
 async function editRequest(id){
 
-    const {data,error}=await supabaseClient
-
-    .from("employee_overtime")
-
-    .select("*")
-
-    .eq("id",id)
-
-    .single();
+    const { data, error } = await supabaseClient
+        .from("employee_overtime")
+        .select("*")
+        .eq("id", id)
+        .single();
 
     if(error){
-
         alert(error.message);
-
         return;
-
     }
 
-    editingID=id;
+    editingID = id;
 
-    currentAttachment=data.attachment || "";
+    currentAttachment = data.attachment || "";
 
-    document.getElementById("timeIn").value=
+    document.getElementById("timeIn").value =
+        data.overtime_date + "T" + data.time_in.substring(0,5);
 
-    data.overtime_date+"T"+data.time_in.substring(0,5);
+    document.getElementById("timeOut").value =
+        data.overtime_date + "T" + data.time_out.substring(0,5);
 
-    document.getElementById("timeOut").value=
+    document.getElementById("reason").value =
+        data.reason;
 
-    data.overtime_date+"T"+data.time_out.substring(0,5);
+    document.getElementById("totalHours").value =
+        data.total_hours;
 
-    document.getElementById("reason").value=
-
-    data.reason;
-
-    document.getElementById("totalHours").value=
-
-    data.total_hours;
-
-    document.getElementById("submitOTBtn").innerHTML=
-
-    '<i class="fa fa-save"></i> Update Request';
+    document.getElementById("submitOTBtn").innerHTML =
+        '<i class="fa fa-save"></i> Update Request';
 
     window.scrollTo({
-
-        top:0,
-
-        behavior:"smooth"
-
+        top: 0,
+        behavior: "smooth"
     });
 
 }
-
 /******************************************
 DELETE REQUEST
 ******************************************/

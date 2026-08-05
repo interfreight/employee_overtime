@@ -983,21 +983,16 @@ async function submitOvertime(){
 
     }
 
-    if(error){
-
-        alert(error.message);
-
-        return;
-
-    }
-
-    alert("Saved Successfully.");
-
-    clearForm();
-
-    loadMyRequests();
-
+   if(error){
+    alert(error.message);
+    return;
 }
+
+alert(editingID ? "Request Updated Successfully!" : "Request Submitted Successfully!");
+
+clearForm();
+
+await loadMyRequests();   // Refresh the table
 
 /******************************************
 EDIT REQUEST
@@ -1064,29 +1059,23 @@ DELETE REQUEST
 async function deleteRequest(id){
 
     if(!confirm("Delete this request?")){
-
         return;
-
     }
 
-    const {error}=await supabaseClient
-
-    .from("employee_overtime")
-
-    .delete()
-
-    .eq("id",id);
+    const { error } = await supabaseClient
+        .from("employee_overtime")
+        .delete()
+        .eq("id", id);
 
     if(error){
-
         alert(error.message);
-
         return;
-
     }
 
-    loadMyRequests();
+    alert("Request deleted successfully.");
 
+    await loadMyRequests();   // Refresh the table
+}
 }
   document
 .getElementById("submitOTBtn")

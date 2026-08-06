@@ -908,13 +908,18 @@ async function submitOvertime(){
     const attachmentURL =
     await uploadAttachment();
 
-    const dateTimeIn =
-    document.getElementById("timeIn").value;
+    const timeInInput = document.getElementById("timeIn");
+const timeOutInput = document.getElementById("timeOut");
 
-    const dateTimeOut =
-    document.getElementById("timeOut").value;
+console.log("TIME IN ELEMENT =", timeInInput);
+console.log("TIME OUT ELEMENT =", timeOutInput);
+
+const dateTimeIn = timeInInput.value;
+const dateTimeOut = timeOutInput.value;
+
 console.log("dateTimeIn =", dateTimeIn);
 console.log("dateTimeOut =", dateTimeOut);
+
 
 console.log("time_in =", dateTimeIn.split("T")[1]);
 console.log("time_out =", dateTimeOut.split("T")[1]);

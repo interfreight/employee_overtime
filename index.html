@@ -543,6 +543,16 @@ let currentAttachment = "";
 if (!currentUser) {
     window.location.replace("https://interfreight.github.io/login/");
 }
+    // Listen for logout from another tab
+window.addEventListener("storage", function (event) {
+
+    if (event.key === "currentUser" && event.newValue === null) {
+
+        window.location.replace("https://interfreight.github.io/login/");
+
+    }
+
+});
 /******************************************
 LOAD EMPLOYEE
 ******************************************/

@@ -52,96 +52,87 @@ background:#F4F7FC;
 
 }
 
-.sidebar{
-
-position:fixed;
-
-left:0;
-
-top:0;
-
-width:250px;
-
-height:100vh;
-
-background:var(--primary);
-
-color:white;
-
+    .sidebar{
+    width:260px;
+    background:#003366;
+    color:white;
+    padding:25px;
+    position:fixed;
+    left:0;
+    top:0;
+    height:100vh;
 }
 
 .logo{
-
-height:90px;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-font-size:22px;
-
-font-weight:bold;
-
-border-bottom:1px solid rgba(255,255,255,.2);
-
+    text-align:center;
+    margin-bottom:30px;
 }
 
-.menu{
+.logo img{
+    width:120px;
+}
 
-margin-top:20px;
-
+.logo h2{
+    margin-top:10px;
+    font-size:22px;
+    font-weight:700;
 }
 
 .menu a{
-
-display:flex;
-
-gap:12px;
-
-align-items:center;
-
-padding:15px 25px;
-
-color:white;
-
-text-decoration:none;
-
+    display:block;
+    padding:14px;
+    margin-bottom:10px;
+    border-radius:10px;
+    text-decoration:none;
+    color:white;
+    font-weight:500;
+    transition:.25s;
 }
 
-.menu a:hover,
-
-.menu .active{
-
-background:var(--secondary);
-
-color:black;
-
+.menu a:hover{
+    background:#0d437a;
 }
 
+.menu a.active{
+    background:#F4C542;
+    color:#003366;
+    font-weight:bold;
+}
 .main{
 
 margin-left:250px;
 
 }
+.main{
+    margin-left:260px;
+    padding:30px;
+}
 
-.topbar{
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
 
-height:75px;
+.header h1{
+    color:#003366;
+    font-size:42px;
+    font-weight:700;
+}
 
-background:white;
+.logout-btn{
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
 
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:0 30px;
-
-box-shadow:var(--shadow);
-
+.logout-btn:hover{
+    background:#bb2d3b;
 }
 
 .content{
@@ -151,27 +142,20 @@ padding:30px;
 }
 
 .card{
-
-background:white;
-
-padding:25px;
-
-border-radius:15px;
-
-box-shadow:var(--shadow);
-
+    background:#fff;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    margin-bottom:25px;
 }
 
 .section-title{
-
-font-size:22px;
-
-color:var(--primary);
-
-margin-bottom:25px;
-
+    color:#003366;
+    margin-bottom:20px;
+    border-left:5px solid #F4C542;
+    padding-left:10px;
+    font-size:24px;
 }
-
 .form-grid{
 
 display:grid;
@@ -237,101 +221,81 @@ font-weight:bold;
 }
 
 .btn-primary{
-
-background:var(--primary);
-
-color:white;
-
+    background:#003366;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.2s;
 }
 
 .btn-primary:hover{
-
-background:#083B77;
-
+    background:#0b4f8a;
 }
 
-@media(max-width:768px){
+@media(max-width:1000px){
 
-.sidebar{
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+    }
 
-display:none;
+    .main{
+        margin-left:0;
+    }
 
-}
-
-.main{
-
-margin-left:0;
-
-}
-
-.form-grid{
-
-grid-template-columns:1fr;
+    .form-grid{
+        grid-template-columns:1fr;
+    }
 
 }
-
-}
-
 </style>
 
 </head>
 
 <body>
 <!-- SIDEBAR -->
-
 <div class="sidebar">
 
-<div class="logo">
+    <div class="logo">
+        <img src="3. INTERFREIGHT COMPANY LOGO.png" alt="INTERFREIGHT Logo">
+        <h2>INTERFREIGHT</h2>
+    </div>
 
-INTERFREIGHT
+    <div class="menu">
 
-</div>
+        <a href="https://interfreight.github.io/employee_portal/">
+            Dashboard
+        </a>
 
-<div class="menu">
+        <a href="https://interfreight.github.io/employee_My_leave_history/">
+            Leave History
+        </a>
 
-<a href="#" class="active">
+        <a href="#" class="active">
+            Overtime Request
+        </a>
 
-<i class="fa fa-clock"></i>
-
-Overtime Request
-
-</a>
-
-<a href="https://interfreight.github.io/employee_portal/" onclick="history.back(); return false;">
-
-<i class="fa fa-user"></i>
-
-Profile
-
-</a>
-
-<a href="https://interfreight.github.io/login/" onclick="history.back(); return false;">
-
-<i class="fa fa-right-from-bracket"></i>
-
-Logout
-
-</a>
+    </div>
 
 </div>
-
-</div>
-
-
 
 <!-- MAIN -->
 
-<div class="main">
+<div class="header">
 
-<div class="topbar">
+    <h1>Employee Overtime Request</h1>
 
-<div>
+    <button class="logout-btn"
+        onclick="window.location.href='https://interfreight.github.io/login/'">
 
-<h2>
+        Logout
 
-Employee Overtime Request
+    </button>
 
-</h2>
+</div>
 
 <small>
 

@@ -286,12 +286,10 @@ font-weight:bold;
 Submit your overtime request for approval
 
 </small>
-    <button class="logout-btn"
-        onclick="window.location.href='https://interfreight.github.io/login/'">
-
-        Logout
-
-    </button>
+   <button class="logout-btn" onclick="logout()">
+    Logout
+</button>
+    
 
 </div>
 
@@ -540,6 +538,11 @@ let employeeID = null;
 let editingID = null;
 let currentAttachment = "";
 
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+if (!currentUser) {
+    window.location.replace("https://interfreight.github.io/login/");
+}
 /******************************************
 LOAD EMPLOYEE
 ******************************************/
@@ -999,6 +1002,17 @@ document.getElementById("timeOut").value =
 
     console.log("INPUT timeIn =", document.getElementById("timeIn").value);
     console.log("INPUT timeOut =", document.getElementById("timeOut").value);
+}
+    function logout() {
+
+    // Remove the login session
+    localStorage.removeItem("currentUser");
+
+    // Optional: clear all local storage
+    // localStorage.clear();
+
+    // Redirect to login page
+    window.location.replace("https://interfreight.github.io/login/");
 }
 /******************************************
 DELETE REQUEST

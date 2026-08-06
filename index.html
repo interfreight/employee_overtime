@@ -934,12 +934,19 @@ console.log("time_out =", dateTimeOut.split("T")[1]);
     position:
     document.getElementById("position").value,
 
+    // DATE IN
     overtime_date:
     dateTimeIn.split("T")[0],
 
+    // DATE OUT (NEW)
+    overtime_end_date:
+    dateTimeOut.split("T")[0],
+
+    // TIME IN
     time_in:
     dateTimeIn.split("T")[1],
 
+    // TIME OUT
     time_out:
     dateTimeOut.split("T")[1],
 
@@ -1019,11 +1026,11 @@ async function editRequest(id){
     editingID = id;
     currentAttachment = data.attachment || "";
 
-    document.getElementById("timeIn").value =
-        `${data.overtime_date}T${String(data.time_in).slice(0,5)}`;
+   document.getElementById("timeIn").value =
+`${data.overtime_date}T${String(data.time_in).slice(0,5)}`;
 
-    document.getElementById("timeOut").value =
-        `${data.overtime_date}T${String(data.time_out).slice(0,5)}`;
+document.getElementById("timeOut").value =
+`${data.overtime_end_date}T${String(data.time_out).slice(0,5)}`;
 
     document.getElementById("reason").value =
         data.reason;

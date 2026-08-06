@@ -890,7 +890,45 @@ console.log("dateTimeOut =", dateTimeOut);
 
 console.log("time_in =", dateTimeIn.split("T")[1]);
 console.log("time_out =", dateTimeOut.split("T")[1]);
- const request = {
+
+console.log(currentUser);
+console.log("Department =", currentUser.department);
+console.log("Role =", currentUser.role);
+    
+let approverRole = "";
+
+if(currentUser.role.toUpperCase() === "USER"){
+
+    switch(currentUser.department.toUpperCase()){
+
+        case "OPERATIONS":
+            approverRole = "OPERATIONS MANAGER";
+            break;
+
+        case "ACCOUNTING":
+            approverRole = "ACCOUNTING MANAGER";
+            break;
+
+        case "TRANSPORT":
+            approverRole = "TRANSPORT MANAGER";
+            break;
+
+        case "SALES":
+            approverRole = "SALES MANAGER";
+            break;
+
+        case "FORWARDING":
+            approverRole = "FORWARDING MANAGER";
+            break;
+
+        case "HR":
+            approverRole = "HR";
+            break;
+    }
+
+}
+
+const request = {
 
     employee_id: currentUser.id,
 
@@ -899,6 +937,8 @@ console.log("time_out =", dateTimeOut.split("T")[1]);
     employee_name: currentUser.full_name,
 
     department: currentUser.department,
+
+    approver_role: approverRole,
 
     position: document.getElementById("position").value,
 
@@ -911,8 +951,7 @@ console.log("time_out =", dateTimeOut.split("T")[1]);
     time_out: dateTimeOut.split("T")[1],
 
     total_hours: Number(document.getElementById("totalHours").value),
-
-    approved_hours: Number(document.getElementById("totalHours").value),
+approved_hours: null,
 
     reason: document.getElementById("reason").value,
 
@@ -928,7 +967,7 @@ console.log("time_out =", dateTimeOut.split("T")[1]);
 
     hr_approved_by: null,
 
-    hr_approved_date: null,
+    hr_approved_date: null
 
 };
 

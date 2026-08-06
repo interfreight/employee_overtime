@@ -890,45 +890,45 @@ console.log("dateTimeOut =", dateTimeOut);
 
 console.log("time_in =", dateTimeIn.split("T")[1]);
 console.log("time_out =", dateTimeOut.split("T")[1]);
-   const request = {
+ const request = {
 
-    employee_name:
-    document.getElementById("employeeName").value,
+    employee_id: currentUser.id,
 
-    department:
-    document.getElementById("department").value,
+    employee_number: currentUser.employee_number,
 
-    position:
-    document.getElementById("position").value,
+    employee_name: currentUser.full_name,
 
-    // DATE IN
-    overtime_date:
-    dateTimeIn.split("T")[0],
+    department: currentUser.department,
 
-    // DATE OUT (NEW)
-    overtime_end_date:
-    dateTimeOut.split("T")[0],
+    position: document.getElementById("position").value,
 
-    // TIME IN
-    time_in:
-    dateTimeIn.split("T")[1],
+    overtime_date: dateTimeIn.split("T")[0],
 
-    // TIME OUT
-    time_out:
-    dateTimeOut.split("T")[1],
+    overtime_end_date: dateTimeOut.split("T")[0],
 
-    total_hours:
-    Number(document.getElementById("totalHours").value),
+    time_in: dateTimeIn.split("T")[1],
 
-    reason:
-    document.getElementById("reason").value,
+    time_out: dateTimeOut.split("T")[1],
 
-    attachment:
-    attachmentURL,
+    total_hours: Number(document.getElementById("totalHours").value),
 
-    department_status:"Pending",
+    approved_hours: Number(document.getElementById("totalHours").value),
 
-    hr_status:"Pending"
+    reason: document.getElementById("reason").value,
+
+    attachment: attachmentURL,
+
+    department_status: "Pending",
+
+    department_approved_by: null,
+
+    department_approved_date: null,
+
+    hr_status: "Waiting",
+
+    hr_approved_by: null,
+
+    hr_approved_date: null,
 
 };
 

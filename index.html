@@ -739,13 +739,12 @@ function addRequestRow(row){
     const table =
     document.getElementById("requestTable");
 
-   const canEdit =
+  const departmentStatus = (row.department_status || "").toLowerCase();
+const hrStatus = (row.hr_status || "").toLowerCase();
 
-(row.department_status || "").toLowerCase()=="pending"
-
-&&
-
-(row.hr_status || "").toLowerCase()=="pending";
+const canEdit =
+departmentStatus === "pending" &&
+(hrStatus === "waiting" || hrStatus === "pending");
 
    table.innerHTML += `
 <tr>

@@ -481,7 +481,7 @@ border-collapse:collapse;">
 
 <tr style="background:#0B4F9F;color:white;">
 
-<th style="padding:12px;">Date</th>
+<th>Date</th>
 
 <th>Hours</th>
 
@@ -490,6 +490,8 @@ border-collapse:collapse;">
 <th>HR Status</th>
 
 <th>Department</th>
+
+<th>Remarks</th>
 
 <th>Action</th>
 
@@ -736,60 +738,64 @@ function clearForm(){
 }
 function addRequestRow(row){
 
-    const table =
-    document.getElementById("requestTable");
+    const table = document.getElementById("requestTable");
 
-  const departmentStatus = (row.department_status || "").toLowerCase();
-const hrStatus = (row.hr_status || "").toLowerCase();
+    const departmentStatus = (row.department_status || "").toLowerCase();
+    const hrStatus = (row.hr_status || "").toLowerCase();
 
-const canEdit =
-departmentStatus === "pending" &&
-(hrStatus === "waiting" || hrStatus === "pending");
+    const canEdit =
+        departmentStatus === "pending" &&
+        (hrStatus === "waiting" || hrStatus === "pending");
 
-   table.innerHTML += `
-<tr>
+    table.innerHTML += `
+    <tr>
 
-    <td style="padding:12px">
-        ${row.overtime_date}
-    </td>
+        <td>${row.overtime_date}</td>
 
-    <td>
-        ${row.total_hours}
-    </td>
+        <td>${row.total_hours}</td>
 
-    <td>
-        ${row.department_status}
-    </td>
+        <td>${row.department_status}</td>
 
-    <td>
-        ${row.hr_status}
-    </td>
+        <td>${row.hr_status}</td>
 
-    <td>
-        ${row.department}
-    </td>
+        <td>${row.department}</td>
 
-    <td>
-        ${
-        canEdit
-        ?
-        `
-        <button class="btn btn-primary" onclick="editRequest('${row.id}')">
-            Edit
-        </button>
+        <td>
+            ${
+                row.remarks
+                ? `<span style="
+                    color:${departmentStatus==="rejected" ? "#dc3545" : "#003366"};
+                    font-weight:600;
+                ">
+                    ${row.remarks}
+                </span>`
+                : "-"
+            }
+        </td>
 
-        <button class="btn" style="background:red;color:white"
-        onclick="deleteRequest('${row.id}')">
-            Delete
-        </button>
-        `
-        :
-        `Approved`
-        }
-    </td>
+        <td>
+            ${
+                canEdit
+                ?
+                `
+                <button class="btn btn-primary"
+                    onclick="editRequest('${row.id}')">
+                    Edit
+                </button>
 
-</tr>
-`;
+                <button class="btn"
+                    style="background:red;color:white"
+                    onclick="deleteRequest('${row.id}')">
+                    Delete
+                </button>
+                `
+                :
+                `<span style="color:#28a745;font-weight:bold;">Completed</span>`
+            }
+        </td>
+
+    </tr>
+    `;
 }
 /******************************************
 LOAD MY REQUESTS

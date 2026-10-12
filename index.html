@@ -229,23 +229,198 @@ font-weight:bold;
     background:#0b4f8a;
 }
 
-@media(max-width:1000px){
 
-    .sidebar{
-        width:100%;
-        height:auto;
-        position:relative;
+/* TABLET RESPONSIVE */
+@media (max-width: 1000px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 16px 20px;
     }
 
-    .main{
-        margin-left:0;
+    .logo {
+        margin-bottom: 16px;
     }
 
-    .form-grid{
-        grid-template-columns:1fr;
+    .logo img {
+        width: 85px;
     }
 
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .menu a {
+        margin-bottom: 0;
+        padding: 10px 14px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 24px;
+    }
+
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+        padding: 22px;
+    }
 }
+
+/* MOBILE PHONE RESPONSIVE */
+@media (max-width: 600px) {
+
+    .sidebar {
+        padding: 14px 12px;
+    }
+
+    .logo img {
+        width: 75px;
+    }
+
+    .logo h2 {
+        font-size: 19px;
+    }
+
+    .menu {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .menu a {
+        text-align: center;
+        padding: 11px 12px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 16px 12px;
+    }
+
+    .content {
+        padding: 0;
+    }
+
+    .header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .header h1 {
+        flex: 1 1 100%;
+        font-size: 25px;
+        line-height: 1.3;
+    }
+
+    .header small {
+        flex: 1 1 180px;
+    }
+
+    .logout-btn {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .card {
+        padding: 16px 12px;
+        border-radius: 14px;
+    }
+
+    .section-title {
+        font-size: 19px;
+        line-height: 1.4;
+    }
+
+    .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 15px;
+    }
+
+    .form-group[style*="grid-column"] {
+        grid-column: 1 / -1 !important;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        min-width: 0;
+        font-size: 16px;
+    }
+
+    #submitOTBtn {
+        width: 100%;
+        white-space: normal;
+    }
+}
+
+/* VERY SMALL PHONES */
+@media (max-width: 360px) {
+    .main {
+        padding: 12px 8px;
+    }
+
+    .card {
+        padding: 12px 9px;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+}
+
+/* GENERAL RESPONSIVE RULES */
+html {
+    width: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    width: 100%;
+    min-width: 320px;
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.main,
+.content,
+.card,
+.header,
+.form-grid,
+.form-group {
+    min-width: 0;
+}
+
+.main {
+    max-width: 100%;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.header h1 {
+    overflow-wrap: anywhere;
+    font-size: clamp(24px, 3vw, 42px);
+}
+
 </style>
 
 </head>

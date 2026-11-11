@@ -660,70 +660,54 @@ LOAD MY OVERTIME REQUESTS
 
 
 async function loadMyRequests() {
+
     const table = document.getElementById("requestTable");
     const dropdown = document.getElementById("completionRequest");
 
+    const currentUser = JSON.parse(
+        localStorage.getItem("currentUser")
+    );
+
     table.innerHTML = `
-        <tr><td colspan="9">Loading requests...</td></tr>
+        <tr>
+            <td colspan="9">Loading requests...</td>
+        </tr>
     `;
 
-    if (!currentUser || !currentUser.id) {
+    if (!currentUser || !currentUser.full_name) {
         table.innerHTML = `
             <tr>
-                <td colspan="9">Unable to identify employee account.</td>
+                <td colspan="9">Unable to identify employee.</td>
             </tr>
         `;
         return;
     }
 
-    try {
-        // STEP 1: Get employee number from employee_profiles
-        const { data: profile, error: profileError } =
-            await supabaseClient
-                .from("employee_profiles")
-                .select("employee_number")
-                .eq("user_id", currentUser.id)
-                .maybeSingle();
+    const { data, error } = await supabaseClient
+        .from("employee_overtime")
+        .select("*")
+        .eq("employee_name", currentUser.full_name)
+        .order("overtime_date", { ascending: false });
 
-        if (profileError) {
-            console.error("Employee profile error:", profileError);
-            throw profileError;
-        }
+    if (error) {
+        console.error("Load requests error:", error);
 
-        const employeeNumber =
-            currentUser.employee_number || profile?.employee_number;
+        table.innerHTML = `
+            <tr>
+                <td colspan="9">
+                    Unable to load requests: ${error.message}
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
-        if (!employeeNumber) {
-            console.error("Employee number not found.", profile);
+    console.log("Employee:", currentUser.full_name);
+    console.log("My overtime requests:", data);
 
-            table.innerHTML = `
-                <tr>
-                    <td colspan="9">
-                        Employee number not found in employee profile.
-                        Please contact HR or IT.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
+    // COMPLETION DROPDOWN
+    if (dropdown) {
 
-        console.log("Employee number:", employeeNumber);
-
-        // STEP 2: Get all overtime requests
-        const { data, error } = await supabaseClient
-            .from("employee_overtime")
-            .select("*")
-            .eq("employee_number", employeeNumber)
-            .order("overtime_date", { ascending: false });
-
-        if (error) {
-            console.error("Overtime loading error:", error);
-            throw error;
-        }
-
-        console.log("Overtime requests:", data);
-
-        // STEP 3: Populate completion dropdown
         dropdown.innerHTML = `
             <option value="">Select Approved Request</option>
         `;
@@ -734,43 +718,38 @@ async function loadMyRequests() {
         );
 
         approvedRequests.forEach(row => {
+
             const option = document.createElement("option");
+
             option.value = row.id;
+
             option.textContent =
                 `${row.overtime_date} - ${row.total_hours} hours`;
 
             dropdown.appendChild(option);
+
         });
+    }
 
-        // STEP 4: Display ALL requests
-        table.innerHTML = "";
+    // DISPLAY ALL REQUESTS
+    table.innerHTML = "";
 
-        if (data.length === 0) {
-            table.innerHTML = `
-                <tr>
-                    <td colspan="9" style="padding:20px;">
-                        No overtime requests found.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        data.forEach(row => addRequestRow(row));
-
-    } catch (error) {
-        console.error("loadMyRequests failed:", error);
+    if (data.length === 0) {
 
         table.innerHTML = `
             <tr>
                 <td colspan="9" style="padding:20px;">
-                    Unable to load requests: ${error.message}
+                    No overtime requests found.
                 </td>
             </tr>
         `;
-    }
-}
 
+        return;
+    }
+
+    data.forEach(row => addRequestRow(row));
+
+}
 
 /******************************************
 DISPLAY REQUEST ROW

@@ -657,26 +657,55 @@ document.getElementById("submitOTBtn").addEventListener("click", submitOvertime)
 /******************************************
 LOAD MY OVERTIME REQUESTS
 ******************************************/
+
 async function loadMyRequests() {
     const table = document.getElementById("requestTable");
     const dropdown = document.getElementById("completionRequest");
 
-    table.innerHTML = `<tr><td colspan="9">Loading...</td></tr>`;
+    table.innerHTML = `
+        <tr><td colspan="9">Loading requests...</td></tr>
+    `;
+
+    if (!currentUser || !currentUser.employee_number) {
+        console.error("Missing employee number:", currentUser);
+        table.innerHTML = `
+            <tr>
+                <td colspan="9" style="padding:20px;">
+                    Unable to identify employee account.
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
     const { data, error } = await supabaseClient
         .from("employee_overtime")
         .select("*")
         .eq("employee_number", currentUser.employee_number)
-        .order("overtime_date", { ascending:false });
+        .order("overtime_date", { ascending: false });
 
     if (error) {
-        console.log(error);
-        table.innerHTML = `<tr><td colspan="9">Unable to load requests.</td></tr>`;
+        console.error("Load requests error:", error);
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="9" style="padding:20px;">
+                    Unable to load requests: ${error.message}
+                </td>
+            </tr>
+        `;
         return;
     }
 
-    dropdown.innerHTML = '<option value="">Select Approved Request</option>';
+    console.log("Employee number:", currentUser.employee_number);
+    console.log("Retrieved overtime requests:", data);
 
+    dropdown.innerHTML = `
+        <option value="">Select Approved Request</option>
+    `;
+
+    // Only approved requests without completion reports
+    // will appear in the completion dropdown.
     const approvedRequests = data.filter(row =>
         String(row.department_status || "").toLowerCase() === "approved" &&
         !row.completion_report
@@ -685,20 +714,25 @@ async function loadMyRequests() {
     approvedRequests.forEach(row => {
         const option = document.createElement("option");
         option.value = row.id;
-        option.textContent = `${row.overtime_date} - ${row.total_hours} hours`;
+        option.textContent =
+            `${row.overtime_date} - ${row.total_hours} hours`;
         dropdown.appendChild(option);
     });
 
     table.innerHTML = "";
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
         table.innerHTML = `
             <tr>
-                <td colspan="9" style="padding:20px;">No overtime requests found.</td>
-            </tr>`;
+                <td colspan="9" style="padding:20px;">
+                    No overtime requests found.
+                </td>
+            </tr>
+        `;
         return;
     }
 
+    // Display ALL requests, including Pending, Approved and Rejected.
     data.forEach(row => addRequestRow(row));
 }
 

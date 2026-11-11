@@ -1,1286 +1,1000 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
-
-<title>
-
-INTERFREIGHT | Employee Overtime Request
-
-</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>INTERFREIGHT | Employee Overtime Request</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
 <style>
-
-*{
-
-margin:0;
-
-padding:0;
-
-box-sizing:border-box;
-
-font-family:Poppins,sans-serif;
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+:root{--primary:#003366;--secondary:#F4C542;--white:#fff;--border:#E5EAF2;--bg:#F4F7FC}
+html,body{width:100%;min-width:320px;overflow-x:hidden}
+body{background:var(--bg)}
+.sidebar{width:260px;background:#003366;color:white;padding:25px;position:fixed;left:0;top:0;height:100vh;overflow-y:auto}
+.logo{text-align:center;margin-bottom:30px}
+.logo img{width:120px}
+.logo h2{margin-top:10px;font-size:22px}
+.menu a{display:block;padding:14px;margin-bottom:10px;border-radius:10px;text-decoration:none;color:white;font-weight:500;transition:.25s}
+.menu a:hover{background:#0d437a}
+.menu a.active{background:#F4C542;color:#003366;font-weight:bold}
+.main{margin-left:260px;padding:30px;max-width:100%}
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:25px}
+.header h1{color:#003366;font-size:clamp(24px,3vw,38px)}
+.logout-btn{background:#dc3545;color:white;border:none;padding:12px 18px;border-radius:8px;cursor:pointer;font-weight:600}
+.content{padding:0}
+.card{background:white;border-radius:18px;padding:25px;box-shadow:0 5px 20px rgba(0,0,0,.08);margin-bottom:25px}
+.section-title{color:#003366;margin-bottom:20px;border-left:5px solid #F4C542;padding-left:10px;font-size:23px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.form-group{display:flex;flex-direction:column;min-width:0}
+.form-group label{margin-bottom:8px;font-weight:500;color:#333}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:white}
+.form-group input[readonly]{background:#f0f3f8}
+textarea{min-height:100px;resize:vertical}
+.btn{padding:11px 17px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+.btn-primary{background:#003366;color:white}
+.btn-primary:hover{background:#0b4f8a}
+.btn-danger{background:#dc3545;color:white}
+.btn-secondary{background:#6c757d;color:white}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.table-wrapper{width:100%;overflow-x:auto}
+table{width:100%;min-width:950px;border-collapse:collapse}
+th,td{padding:12px;text-align:center;border-bottom:1px solid #e5eaf2;font-size:13px}
+th{background:#0B4F9F;color:white;white-space:nowrap}
+td{color:#333}
+.status{display:inline-block;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.pending{background:#fff3cd;color:#856404}
+.approved{background:#d4edda;color:#155724}
+.rejected{background:#f8d7da;color:#721c24}
+.waiting{background:#e2e3e5;color:#383d41}
+.info-box{padding:14px;border-radius:9px;background:#eef5ff;color:#003366;margin-bottom:20px;font-size:13px}
+.hidden{display:none!important}
+.action-buttons{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.calculation-box{background:#f7f9fc;border:1px solid #e5eaf2;border-radius:10px;padding:15px;margin-top:4px}
+.calculation-row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:14px}
+.calculation-row strong{color:#003366}
+.net-result{border-top:1px solid #dce3ed;margin-top:8px;padding-top:12px;font-size:16px}
+.net-result strong{color:#087443;font-size:20px}
+.helper-text{font-size:12px;color:#666;margin-top:5px}
+.full-width{grid-column:1/-1}
+@media(max-width:1000px){
+.sidebar{position:relative;width:100%;height:auto;padding:16px}
+.logo img{width:85px}
+.menu{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.menu a{margin:0;padding:10px 14px}
+.main{margin-left:0;padding:24px}
 }
-
-body{
-
-background:#F4F7FC;
-
+@media(max-width:600px){
+.sidebar{padding:14px 12px}
+.menu{display:grid;grid-template-columns:1fr;gap:6px}
+.menu a{text-align:center}
+.main{padding:16px 12px}
+.header h1{font-size:25px;width:100%}
+.card{padding:16px 12px;border-radius:14px}
+.section-title{font-size:19px}
+.form-grid{grid-template-columns:1fr;gap:15px}
+.form-group input,.form-group select,.form-group textarea{font-size:16px}
+.submit-btn{width:100%}
 }
-
-:root{
-
---primary:#0B4F9F;
-
---secondary:#FDB913;
-
---white:#ffffff;
-
---border:#E5EAF2;
-
---shadow:0 8px 25px rgba(0,0,0,.08);
-
-}
-
-    .sidebar{
-    width:260px;
-    background:#003366;
-    color:white;
-    padding:25px;
-    position:fixed;
-    left:0;
-    top:0;
-    height:100vh;
-}
-
-.logo{
-    text-align:center;
-    margin-bottom:30px;
-}
-
-.logo img{
-    width:120px;
-}
-
-.logo h2{
-    margin-top:10px;
-    font-size:22px;
-    font-weight:700;
-}
-
-.menu a{
-    display:block;
-    padding:14px;
-    margin-bottom:10px;
-    border-radius:10px;
-    text-decoration:none;
-    color:white;
-    font-weight:500;
-    transition:.25s;
-}
-
-.menu a:hover{
-    background:#0d437a;
-}
-
-.menu a.active{
-    background:#F4C542;
-    color:#003366;
-    font-weight:bold;
-}
-.main{
-    margin-left:260px;
-    padding:30px;
-}
-
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
-}
-
-.header h1{
-    color:#003366;
-    font-size:42px;
-    font-weight:700;
-}
-
-.logout-btn{
-    background:#dc3545;
-    color:white;
-    border:none;
-    padding:12px 18px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-}
-
-.logout-btn:hover{
-    background:#bb2d3b;
-}
-
-.content{
-
-padding:30px;
-
-}
-
-.card{
-    background:#fff;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-    margin-bottom:25px;
-}
-
-.section-title{
-    color:#003366;
-    margin-bottom:20px;
-    border-left:5px solid #F4C542;
-    padding-left:10px;
-    font-size:24px;
-}
-.form-grid{
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:20px;
-
-}
-
-.form-group{
-
-display:flex;
-
-flex-direction:column;
-
-}
-
-.form-group label{
-
-margin-bottom:8px;
-
-font-weight:500;
-
-}
-
-.form-group input,
-
-.form-group select,
-
-.form-group textarea{
-
-padding:12px;
-
-border:1px solid var(--border);
-
-border-radius:8px;
-
-font-size:14px;
-
-}
-
-textarea{
-
-min-height:100px;
-
-resize:none;
-
-}
-
-.btn{
-
-padding:12px 20px;
-
-border:none;
-
-border-radius:8px;
-
-cursor:pointer;
-
-font-weight:bold;
-
-}
-
-.btn-primary{
-    background:#003366;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.btn-primary:hover{
-    background:#0b4f8a;
-}
-
-
-/* TABLET RESPONSIVE */
-@media (max-width: 1000px) {
-    .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        padding: 16px 20px;
-    }
-
-    .logo {
-        margin-bottom: 16px;
-    }
-
-    .logo img {
-        width: 85px;
-    }
-
-    .menu {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .menu a {
-        margin-bottom: 0;
-        padding: 10px 14px;
-    }
-
-    .main {
-        margin-left: 0;
-        padding: 24px;
-    }
-
-    .form-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .card {
-        padding: 22px;
-    }
-}
-
-/* MOBILE PHONE RESPONSIVE */
-@media (max-width: 600px) {
-
-    .sidebar {
-        padding: 14px 12px;
-    }
-
-    .logo img {
-        width: 75px;
-    }
-
-    .logo h2 {
-        font-size: 19px;
-    }
-
-    .menu {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 6px;
-    }
-
-    .menu a {
-        text-align: center;
-        padding: 11px 12px;
-    }
-
-    .main {
-        margin-left: 0;
-        padding: 16px 12px;
-    }
-
-    .content {
-        padding: 0;
-    }
-
-    .header {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .header h1 {
-        flex: 1 1 100%;
-        font-size: 25px;
-        line-height: 1.3;
-    }
-
-    .header small {
-        flex: 1 1 180px;
-    }
-
-    .logout-btn {
-        padding: 10px 12px;
-        font-size: 12px;
-    }
-
-    .card {
-        padding: 16px 12px;
-        border-radius: 14px;
-    }
-
-    .section-title {
-        font-size: 19px;
-        line-height: 1.4;
-    }
-
-    .form-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 15px;
-    }
-
-    .form-group[style*="grid-column"] {
-        grid-column: 1 / -1 !important;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        min-width: 0;
-        font-size: 16px;
-    }
-
-    #submitOTBtn {
-        width: 100%;
-        white-space: normal;
-    }
-}
-
-/* VERY SMALL PHONES */
-@media (max-width: 360px) {
-    .main {
-        padding: 12px 8px;
-    }
-
-    .card {
-        padding: 12px 9px;
-    }
-
-    .header h1 {
-        font-size: 22px;
-    }
-}
-
-/* GENERAL RESPONSIVE RULES */
-html {
-    width: 100%;
-    overflow-x: hidden;
-    -webkit-text-size-adjust: 100%;
-}
-
-body {
-    width: 100%;
-    min-width: 320px;
-    overflow-x: hidden;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-.main,
-.content,
-.card,
-.header,
-.form-grid,
-.form-group {
-    min-width: 0;
-}
-
-.main {
-    max-width: 100%;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    box-sizing: border-box;
-    max-width: 100%;
-}
-
-.header h1 {
-    overflow-wrap: anywhere;
-    font-size: clamp(24px, 3vw, 42px);
-}
-
 </style>
-
 </head>
 
 <body>
-<!-- SIDEBAR -->
-<div class="sidebar">
 
+<div class="sidebar">
     <div class="logo">
         <img src="3. INTERFREIGHT COMPANY LOGO.png" alt="INTERFREIGHT Logo">
         <h2>INTERFREIGHT</h2>
     </div>
-
     <div class="menu">
+        <a href="https://interfreight.github.io/employee_portal/">Dashboard</a>
+        <a href="https://interfreight.github.io/employee_My_leave_history/">Leave History</a>
+        <a href="#" class="active">Overtime Request</a>
+    </div>
+</div>
 
-        <a href="https://interfreight.github.io/employee_portal/">
-            Dashboard
-        </a>
-
-        <a href="https://interfreight.github.io/employee_My_leave_history/">
-            Leave History
-        </a>
-
-        <a href="#" class="active">
-            Overtime Request
-        </a>
-
+<div class="main">
+    <div class="header">
+        <h1>Employee Overtime Request</h1>
+        <small>Submit your overtime request for approval</small>
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
+    <div class="content">
+
+        <!-- OVERTIME REQUEST FORM -->
+        <div class="card">
+            <h2 class="section-title">Overtime Request Form</h2>
+
+            <div class="info-box">
+                <i class="fa fa-info-circle"></i>
+                Please submit your overtime request before performing overtime work.
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Employee Name</label>
+                    <input id="employeeName" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <input id="department" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Position</label>
+                    <input id="position" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Date &amp; Time In</label>
+                    <input type="datetime-local" id="timeIn">
+                </div>
+
+                <div class="form-group">
+                    <label>Date &amp; Time Out</label>
+                    <input type="datetime-local" id="timeOut">
+                </div>
+
+                <div class="form-group">
+                    <label>Total Requested Hours</label>
+                    <input id="totalHours" readonly>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Reason for Overtime</label>
+                    <textarea id="reason" placeholder="Enter reason for overtime..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Expected Tasks During Overtime</label>
+                    <textarea id="expectedTasks" placeholder="List the tasks you are expected to complete..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Supporting Attachment</label>
+                    <input type="file" id="attachment">
+                </div>
+            </div>
+
+            <br>
+            <button class="btn btn-primary submit-btn" id="submitOTBtn">
+                <i class="fa fa-paper-plane"></i> Submit Overtime Request
+            </button>
+        </div>
+
+        <!-- COMPLETION REPORT FORM -->
+        <div class="card hidden" id="completionCard">
+            <h2 class="section-title">Overtime Completion Report</h2>
+
+            <div class="info-box">
+                <i class="fa fa-info-circle"></i>
+                Submit your actual overtime hours and accomplishments after completing your approved overtime. Enter your actual break duration. If you did not take a break, enter 0.
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Approved Overtime Request</label>
+                    <select id="completionRequest">
+                        <option value="">Select Approved Request</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Actual Date &amp; Time In</label>
+                    <input type="datetime-local" id="actualTimeIn">
+                </div>
+
+                <div class="form-group">
+                    <label>Actual Date &amp; Time Out</label>
+                    <input type="datetime-local" id="actualTimeOut">
+                </div>
+
+                <div class="form-group">
+                    <label>Break Duration (Minutes)</label>
+                    <input type="number" id="actualBreakMinutes" min="0" step="1" value="0" placeholder="Enter 0 if no break">
+                    <span class="helper-text">Enter the actual number of minutes you took for breaks. Enter 0 if you did not take a break.</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Total Elapsed Hours</label>
+                    <input id="actualTotalHours" readonly>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="calculation-box">
+                        <div class="calculation-row">
+                            <span>Total Elapsed Hours</span>
+                            <strong id="elapsedDisplay">0.00 hours</strong>
+                        </div>
+                        <div class="calculation-row">
+                            <span>Less: Break Duration</span>
+                            <strong id="breakDisplay">0 minutes</strong>
+                        </div>
+                        <div class="calculation-row net-result">
+                            <span>Net Actual Overtime</span>
+                            <strong id="netHoursDisplay">0.00 hours</strong>
+                        </div>
+                    </div>
+                    <input type="hidden" id="actualNetHours">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Accomplishment Report</label>
+                    <textarea id="completionReport" placeholder="Describe the tasks completed during overtime..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Completion Attachment</label>
+                    <input type="file" id="completionAttachment">
+                </div>
+            </div>
+
+            <br>
+            <button class="btn btn-primary submit-btn" id="submitCompletionBtn">
+                <i class="fa fa-paper-plane"></i> Submit Completion Report
+            </button>
+
+            <button class="btn btn-secondary" onclick="closeCompletionForm()">Cancel</button>
+        </div>
+
+        <!-- MY REQUESTS -->
+        <div class="card">
+            <h2 class="section-title">My Overtime Requests</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Requested Hours</th>
+                            <th>Department Status</th>
+                            <th>HR Status</th>
+                            <th>Department</th>
+                            <th>Remarks</th>
+                            <th>Net Actual Hours</th>
+                            <th>Final Manager Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestTable">
+                        <tr><td colspan="9">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
 </div>
-<!-- MAIN -->
-<div class="main">
-<div class="header">
-
-    <h1>Employee Overtime Request</h1>
-<small>
-
-Submit your overtime request for approval
-
-</small>
-   <button class="logout-btn" onclick="logout()">
-    Logout
-</button>
-    
-
-</div>
-
-
-
-
-
-<div class="content">
-
-<div class="card">
-
-<h2 class="section-title">
-
-Overtime Request Form
-
-</h2>
-
-
-
-<div class="form-grid">
-
-<div class="form-group">
-
-<label>
-
-Employee Name
-
-</label>
-
-<input
-
-id="employeeName"
-
-readonly>
-
-</div>
-
-
-
-<div class="form-group">
-
-<label>
-
-Department
-
-</label>
-
-<input
-
-id="department"
-
-readonly>
-
-</div>
-
-
-
-<div class="form-group">
-
-<label>
-
-Position
-
-</label>
-
-<input
-
-id="position"
-
-readonly>
-
-</div>
-
-
-<div class="form-group">
-<label>Date & Time In</label>
-<input
-type="datetime-local"
-id="timeIn">
-</div>
-
-<div class="form-group">
-<label>Date & Time Out</label>
-<input
-type="datetime-local"
-id="timeOut">
-</div>
-
-
-
-<div class="form-group">
-
-<label>
-
-Total Hours
-
-</label>
-
-<input
-
-id="totalHours"
-
-readonly>
-
-</div>
-
-
-
-<div class="form-group"
-
-style="grid-column:1/3;">
-
-<label>
-
-Reason for Overtime
-
-</label>
-
-<textarea
-
-id="reason">
-
-</textarea>
-
-</div>
-
-
-
-<div class="form-group"
-
-style="grid-column:1/3;">
-
-<label>
-
-Attachment
-
-</label>
-
-<input
-
-type="file"
-
-id="attachment">
-
-</div>
-
-
-
-</div>
-
-<br>
-
-<button
-
-class="btn btn-primary"
-
-id="submitOTBtn">
-
-<i class="fa fa-paper-plane"></i>
-
-Submit Overtime Request
-
-</button>
-
-</div>
-
-
-
-<!-- MY REQUESTS -->
-
-<br>
-
-<div class="card">
-
-<h2 class="section-title">
-
-My Overtime Requests
-
-</h2>
-
-
-
-<table
-
-style="width:100%;
-border-collapse:collapse;">
-
-<thead>
-
-<tr style="background:#0B4F9F;color:white;">
-
-<th>Date</th>
-
-<th>Hours</th>
-
-<th>Department Status</th>
-
-<th>HR Status</th>
-
-<th>Department</th>
-
-<th>Remarks</th>
-
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody id="requestTable">
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-</body>
-<!-- SUPABASE -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 /******************************************
-SUPABASE
+SUPABASE CONFIGURATION
 ******************************************/
+const SUPABASE_URL = "https://tuihpvykuqbqnfyfepql.supabase.co";
 
-const SUPABASE_URL =
-"https://tuihpvykuqbqnfyfepql.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXAiLCJyZWYiOiJ0dWlocHZ5a3VicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
 
-const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWhwdnlrdXFicW5meWZlcHFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjg4OTcsImV4cCI6MjA5NzMwNDg5N30.HZKS8CgFLjkZ-Bx2AIjFjurH3IsKjvf37Ft852CzJsQ";
-
-const supabaseClient =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /******************************************
 GLOBAL VARIABLES
 ******************************************/
-
 let employeeID = null;
 let editingID = null;
 let currentAttachment = "";
 
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
+/******************************************
+AUTHENTICATION
+******************************************/
 if (!currentUser) {
     window.location.replace("https://interfreight.github.io/login/");
 }
-    // Listen for logout from another tab
-window.addEventListener("storage", function (event) {
 
+window.addEventListener("storage", function(event) {
     if (event.key === "currentUser" && event.newValue === null) {
-
         window.location.replace("https://interfreight.github.io/login/");
-
     }
-
 });
+
+/******************************************
+HELPER FUNCTIONS
+******************************************/
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function(char) {
+        return {
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        }[char];
+    });
+}
+
+function getStatusBadge(status) {
+    const value = String(status || "Waiting");
+    const lower = value.toLowerCase();
+    let className = "waiting";
+
+    if (lower === "approved") className = "approved";
+    if (lower === "pending") className = "pending";
+    if (lower === "rejected") className = "rejected";
+    if (lower === "waiting") className = "waiting";
+
+    return `<span class="status ${className}">${escapeHTML(value)}</span>`;
+}
+
 /******************************************
 LOAD EMPLOYEE
 ******************************************/
-
-async function loadEmployee(){
-
-    const currentUser =
-    JSON.parse(localStorage.getItem("currentUser"));
-
-    if(!currentUser){
-
-        alert("Please login first.");
-
-        window.location.href =
-        "https://interfreight.github.io/login/";
-
-        return;
-
-    }
+async function loadEmployee() {
+    if (!currentUser) return;
 
     employeeID = currentUser.id;
 
-    document.getElementById("employeeName").value =
-    currentUser.full_name || "";
+    document.getElementById("employeeName").value = currentUser.full_name || "";
+    document.getElementById("department").value = currentUser.department || "";
 
-    document.getElementById("department").value =
-    currentUser.department || "";
+    const { data, error } = await supabaseClient
+        .from("employee_profiles")
+        .select("position")
+        .eq("user_id", currentUser.id)
+        .single();
 
-    const {data,error} =
-    await supabaseClient
-    .from("employee_profiles")
-    .select("position")
-    .eq("user_id",currentUser.id)
-    .single();
-
-    if(error){
-
-        console.log(error);
-
-        document.getElementById("position").value="";
-
+    if (error) {
+        console.log("Position error:", error.message);
         return;
-
     }
 
-    document.getElementById("position").value =
-    data.position || "";
-
+    document.getElementById("position").value = data.position || "";
 }
 
 /******************************************
-COMPUTE HOURS
+COMPUTE REQUESTED HOURS
 ******************************************/
+function computeHours() {
+    const timeIn = document.getElementById("timeIn").value;
+    const timeOut = document.getElementById("timeOut").value;
+    const output = document.getElementById("totalHours");
 
-function computeHours(){
-
-    const timeIn =
-    document.getElementById("timeIn").value;
-
-    const timeOut =
-    document.getElementById("timeOut").value;
-
-    if(!timeIn || !timeOut){
-
-        document.getElementById("totalHours").value="";
-
+    if (!timeIn || !timeOut) {
+        output.value = "";
         return;
-
     }
 
-    let start =
-    new Date(timeIn);
+    const diff = new Date(timeOut) - new Date(timeIn);
 
-    let end =
-    new Date(timeOut);
-
-    if(end < start){
-
-        end.setDate(end.getDate()+1);
-
+    if (diff <= 0) {
+        output.value = "";
+        return;
     }
 
-    const diff =
-    end-start;
-
-    const hrs =
-    diff/1000/60/60;
-
-    document.getElementById("totalHours").value =
-    hrs.toFixed(2);
-
+    output.value = (diff / 3600000).toFixed(2);
 }
 
-/******************************************
-TIME EVENTS
-******************************************/
-
-document
-.getElementById("timeIn")
-.addEventListener(
-"change",
-computeHours
-);
-
-document
-.getElementById("timeOut")
-.addEventListener(
-"change",
-computeHours
-);
+document.getElementById("timeIn").addEventListener("change", computeHours);
+document.getElementById("timeOut").addEventListener("change", computeHours);
 
 /******************************************
-UPLOAD ATTACHMENT
+COMPUTE ACTUAL HOURS LESS BREAK
 ******************************************/
+function computeActualHours() {
+    const timeIn = document.getElementById("actualTimeIn").value;
+    const timeOut = document.getElementById("actualTimeOut").value;
+    const breakInput = document.getElementById("actualBreakMinutes");
 
-async function uploadAttachment(){
+    const elapsedOutput = document.getElementById("actualTotalHours");
+    const netOutput = document.getElementById("actualNetHours");
 
-    const file =
-    document.getElementById("attachment").files[0];
+    const elapsedDisplay = document.getElementById("elapsedDisplay");
+    const breakDisplay = document.getElementById("breakDisplay");
+    const netDisplay = document.getElementById("netHoursDisplay");
 
-    if(!file){
+    const breakMinutes = Number(breakInput.value);
 
-        return currentAttachment;
-
+    if (!timeIn || !timeOut) {
+        elapsedOutput.value = "";
+        netOutput.value = "";
+        elapsedDisplay.textContent = "0.00 hours";
+        breakDisplay.textContent = "0 minutes";
+        netDisplay.textContent = "0.00 hours";
+        return;
     }
 
-    const fileName =
-    Date.now()+"_"+file.name;
+    const start = new Date(timeIn);
+    const end = new Date(timeOut);
+    const diff = end - start;
 
-    const {error} =
-    await supabaseClient.storage
-    .from("overtime-attachments")
-    .upload(
-        fileName,
-        file,
-        {
-            upsert:true
-        }
-    );
-
-    if(error){
-
-        alert(error.message);
-
-        return "";
-
+    if (diff <= 0) {
+        elapsedOutput.value = "";
+        netOutput.value = "";
+        elapsedDisplay.textContent = "Invalid time range";
+        breakDisplay.textContent = "0 minutes";
+        netDisplay.textContent = "0.00 hours";
+        return;
     }
 
-    const {data} =
-    supabaseClient.storage
-    .from("overtime-attachments")
-    .getPublicUrl(fileName);
+    const elapsedMinutes = diff / 60000;
+    const elapsedHours = elapsedMinutes / 60;
+
+    const validBreak = Number.isInteger(breakMinutes) && breakMinutes >= 0;
+    const netHours = validBreak
+        ? Math.max(0, (elapsedMinutes - breakMinutes) / 60)
+        : 0;
+
+    elapsedOutput.value = elapsedHours.toFixed(2);
+    netOutput.value = validBreak ? netHours.toFixed(2) : "";
+
+    elapsedDisplay.textContent = elapsedHours.toFixed(2) + " hours";
+    breakDisplay.textContent = validBreak ? breakMinutes + " minutes" : "Invalid break duration";
+    netDisplay.textContent = validBreak ? netHours.toFixed(2) + " hours" : "Please enter valid minutes";
+}
+
+document.getElementById("actualTimeIn").addEventListener("change", computeActualHours);
+document.getElementById("actualTimeOut").addEventListener("change", computeActualHours);
+document.getElementById("actualBreakMinutes").addEventListener("input", computeActualHours);
+
+/******************************************
+UPLOAD REQUEST ATTACHMENT
+******************************************/
+async function uploadAttachment() {
+    const file = document.getElementById("attachment").files[0];
+
+    if (!file) return currentAttachment;
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const fileName = "request_" + Date.now() + "_" + safeName;
+
+    const { error } = await supabaseClient.storage
+        .from("overtime-attachments")
+        .upload(fileName, file);
+
+    if (error) throw error;
+
+    const { data } = supabaseClient.storage
+        .from("overtime-attachments")
+        .getPublicUrl(fileName);
 
     return data.publicUrl;
-
 }
 
 /******************************************
-CLEAR FORM
+UPLOAD COMPLETION ATTACHMENT
 ******************************************/
+async function uploadCompletionAttachment() {
+    const file = document.getElementById("completionAttachment").files[0];
 
-function clearForm(){
+    if (!file) return null;
 
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const fileName = "completion_" + Date.now() + "_" + safeName;
+
+    const { error } = await supabaseClient.storage
+        .from("overtime-attachments")
+        .upload(fileName, file);
+
+    if (error) throw error;
+
+    const { data } = supabaseClient.storage
+        .from("overtime-attachments")
+        .getPublicUrl(fileName);
+
+    return data.publicUrl;
+}
+
+/******************************************
+APPROVER ROLE
+******************************************/
+function getApproverRole() {
+    let approverRole = "";
+
+    if (String(currentUser.role || "").toUpperCase() === "USER") {
+        switch (String(currentUser.department || "").toUpperCase()) {
+            case "OPERATIONS": approverRole = "OPERATIONS MANAGER"; break;
+            case "ACCOUNTING": approverRole = "ACCOUNTING MANAGER"; break;
+            case "TRANSPORT": approverRole = "TRANSPORT MANAGER"; break;
+            case "SALES": approverRole = "SALES MANAGER"; break;
+            case "FORWARDING": approverRole = "FORWARDING MANAGER"; break;
+            case "HR": approverRole = "HR"; break;
+        }
+    }
+
+    return approverRole;
+}
+
+/******************************************
+CLEAR REQUEST FORM
+******************************************/
+function clearForm() {
     editingID = null;
-
     currentAttachment = "";
 
-    document.getElementById("timeIn").value="";
-
-    document.getElementById("timeOut").value="";
-
-    document.getElementById("totalHours").value="";
-
-    document.getElementById("reason").value="";
-
-    document.getElementById("attachment").value="";
+    document.getElementById("timeIn").value = "";
+    document.getElementById("timeOut").value = "";
+    document.getElementById("totalHours").value = "";
+    document.getElementById("reason").value = "";
+    document.getElementById("expectedTasks").value = "";
+    document.getElementById("attachment").value = "";
 
     document.getElementById("submitOTBtn").innerHTML =
-    '<i class="fa fa-paper-plane"></i> Submit Overtime Request';
-
+        '<i class="fa fa-paper-plane"></i> Submit Overtime Request';
 }
-function addRequestRow(row){
 
+/******************************************
+SUBMIT / UPDATE OVERTIME REQUEST
+******************************************/
+async function submitOvertime() {
+    const button = document.getElementById("submitOTBtn");
+
+    if (button.disabled) return;
+
+    const timeIn = document.getElementById("timeIn").value;
+    const timeOut = document.getElementById("timeOut").value;
+    const reason = document.getElementById("reason").value.trim();
+    const expectedTasks = document.getElementById("expectedTasks").value.trim();
+    const hours = Number(document.getElementById("totalHours").value);
+
+    if (!timeIn || !timeOut) {
+        alert("Please select Date & Time In and Out.");
+        return;
+    }
+
+    if (!hours || hours <= 0) {
+        alert("Please enter a valid overtime schedule.");
+        return;
+    }
+
+    if (!reason) {
+        alert("Please enter the reason for overtime.");
+        return;
+    }
+
+    if (!expectedTasks) {
+        alert("Please enter the expected overtime tasks.");
+        return;
+    }
+
+    button.disabled = true;
+
+    try {
+        const attachmentURL = await uploadAttachment();
+
+        const request = {
+            employee_number: currentUser.employee_number,
+            employee_name: currentUser.full_name,
+            department: currentUser.department,
+            approver_role: getApproverRole(),
+            position: document.getElementById("position").value,
+            overtime_date: timeIn.split("T")[0],
+            overtime_end_date: timeOut.split("T")[0],
+            time_in: timeIn.split("T")[1],
+            time_out: timeOut.split("T")[1],
+            total_hours: hours,
+            reason: reason,
+            expected_tasks: expectedTasks,
+            attachment: attachmentURL,
+            department_status: "Pending",
+            department_approved_by: null,
+            department_approved_date: null,
+            hr_status: "Waiting",
+            hr_approved_by: null,
+            hr_approved_date: null
+        };
+
+        if (editingID) {
+            const { data: existing, error: checkError } = await supabaseClient
+                .from("employee_overtime")
+                .select("id")
+                .eq("id", editingID)
+                .eq("employee_number", currentUser.employee_number)
+                .eq("department_status", "Pending")
+                .single();
+
+            if (checkError || !existing) {
+                alert("This request can no longer be edited.");
+                return;
+            }
+
+            const updatePayload = {
+                overtime_date: request.overtime_date,
+                overtime_end_date: request.overtime_end_date,
+                time_in: request.time_in,
+                time_out: request.time_out,
+                total_hours: request.total_hours,
+                reason: request.reason,
+                expected_tasks: request.expected_tasks,
+                attachment: request.attachment
+            };
+
+            const { data, error } = await supabaseClient
+                .from("employee_overtime")
+                .update(updatePayload)
+                .eq("id", editingID)
+                .eq("employee_number", currentUser.employee_number)
+                .eq("department_status", "Pending")
+                .select("id");
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                alert("Request is no longer editable.");
+                return;
+            }
+
+            alert("Overtime request updated successfully!");
+        } else {
+            const { error } = await supabaseClient
+                .from("employee_overtime")
+                .insert([request]);
+
+            if (error) throw error;
+
+            alert("Overtime request submitted successfully!");
+        }
+
+        clearForm();
+        await loadMyRequests();
+
+    } catch (error) {
+        alert("Error: " + error.message);
+    } finally {
+        button.disabled = false;
+    }
+}
+
+document.getElementById("submitOTBtn").addEventListener("click", submitOvertime);
+
+/******************************************
+LOAD MY OVERTIME REQUESTS
+******************************************/
+async function loadMyRequests() {
     const table = document.getElementById("requestTable");
+    const dropdown = document.getElementById("completionRequest");
 
-    const departmentStatus = (row.department_status || "").toLowerCase();
-    const hrStatus = (row.hr_status || "").toLowerCase();
-
-    const canEdit =
-        departmentStatus === "pending" &&
-        (hrStatus === "waiting" || hrStatus === "pending");
-
-    table.innerHTML += `
-    <tr>
-
-        <td>${row.overtime_date}</td>
-
-        <td>${row.total_hours}</td>
-
-        <td>${row.department_status}</td>
-
-        <td>${row.hr_status}</td>
-
-        <td>${row.department}</td>
-
-        <td>
-            ${
-                row.remarks
-                ? `<span style="
-                    color:${departmentStatus==="rejected" ? "#dc3545" : "#003366"};
-                    font-weight:600;
-                ">
-                    ${row.remarks}
-                </span>`
-                : "-"
-            }
-        </td>
-
-        <td>
-            ${
-                canEdit
-                ?
-                `
-                <button class="btn btn-primary"
-                    onclick="editRequest('${row.id}')">
-                    Edit
-                </button>
-
-                <button class="btn"
-                    style="background:red;color:white"
-                    onclick="deleteRequest('${row.id}')">
-                    Delete
-                </button>
-                `
-                :
-                `<span style="color:#28a745;font-weight:bold;">Completed</span>`
-            }
-        </td>
-
-    </tr>
-    `;
-}
-/******************************************
-LOAD MY REQUESTS
-******************************************/
-
-async function loadMyRequests(){
-
-    const currentUser =
-    JSON.parse(localStorage.getItem("currentUser"));
-
-    const {data,error} =
-    await supabaseClient
-    .from("employee_overtime")
-    .select("*")
-    .eq("employee_name",currentUser.full_name)
-    .order("overtime_date",{ascending:false});
-
-    if(error){
-
-        console.log(error);
-
-        return;
-
-    }
-
-
-console.log(data);
-    const table =
-    document.getElementById("requestTable");
-
-    table.innerHTML="";
-
-    if(data.length===0){
-
-        table.innerHTML=
-        `<tr>
-            <td colspan="6"
-            style="padding:20px;text-align:center;">
-            No overtime requests found.
-            </td>
-        </tr>`;
-
-        return;
-
-    }
-
-   data.forEach(function(row){
-
-    addRequestRow(row);
-
-});
-
-}
-
-    /******************************************
-SUBMIT / UPDATE OVERTIME
-******************************************/
-
-async function submitOvertime(){
-
-    if(!document.getElementById("timeIn").value){
-
-        alert("Please select Time In.");
-        return;
-
-    }
-
-    if(!document.getElementById("timeOut").value){
-
-        alert("Please select Time Out.");
-        return;
-
-    }
-
-    if(document.getElementById("reason").value.trim()==""){
-
-        alert("Please enter the reason.");
-        return;
-
-    }
-
-    const attachmentURL =
-    await uploadAttachment();
-
-    const timeInInput = document.getElementById("timeIn");
-const timeOutInput = document.getElementById("timeOut");
-
-console.log("TIME IN ELEMENT =", timeInInput);
-console.log("TIME OUT ELEMENT =", timeOutInput);
-
-const dateTimeIn = timeInInput.value;
-const dateTimeOut = timeOutInput.value;
-
-console.log("dateTimeIn =", dateTimeIn);
-console.log("dateTimeOut =", dateTimeOut);
-
-
-console.log("time_in =", dateTimeIn.split("T")[1]);
-console.log("time_out =", dateTimeOut.split("T")[1]);
-
-console.log(currentUser);
-console.log("Department =", currentUser.department);
-console.log("Role =", currentUser.role);
-    
-let approverRole = "";
-
-if(currentUser.role.toUpperCase() === "USER"){
-
-    switch(currentUser.department.toUpperCase()){
-
-        case "OPERATIONS":
-            approverRole = "OPERATIONS MANAGER";
-            break;
-
-        case "ACCOUNTING":
-            approverRole = "ACCOUNTING MANAGER";
-            break;
-
-        case "TRANSPORT":
-            approverRole = "TRANSPORT MANAGER";
-            break;
-
-        case "SALES":
-            approverRole = "SALES MANAGER";
-            break;
-
-        case "FORWARDING":
-            approverRole = "FORWARDING MANAGER";
-            break;
-
-        case "HR":
-            approverRole = "HR";
-            break;
-    }
-
-}
-
-const request = {
-
-
-    employee_number: currentUser.employee_number,
-
-    employee_name: currentUser.full_name,
-
-    department: currentUser.department,
-
-    approver_role: approverRole,
-
-    position: document.getElementById("position").value,
-
-    overtime_date: dateTimeIn.split("T")[0],
-
-    overtime_end_date: dateTimeOut.split("T")[0],
-
-    time_in: dateTimeIn.split("T")[1],
-
-    time_out: dateTimeOut.split("T")[1],
-
-    total_hours: Number(document.getElementById("totalHours").value),
-approved_hours: null,
-
-    reason: document.getElementById("reason").value,
-
-    attachment: attachmentURL,
-
-    department_status: "Pending",
-
-    department_approved_by: null,
-
-    department_approved_date: null,
-
-    hr_status: "Waiting",
-
-    hr_approved_by: null,
-
-    hr_approved_date: null
-
-};
-
-    let error;
-console.log(request);
-    if(editingID){
-
-        ({error}=await supabaseClient
-
-        .from("employee_overtime")
-
-        .update(request)
-
-        .eq("id",editingID));
-
-    }
-
-    else{
-
-        ({error}=await supabaseClient
-
-        .from("employee_overtime")
-
-        .insert([request]));
-
-    }
-
-   if(error){
-    alert(error.message);
-    return;
-}
-
-alert(editingID ? "Request Updated Successfully!" : "Request Submitted Successfully!");
-
-clearForm();
-
-await loadMyRequests(); 
-    // Refresh the table
-}
-/******************************************
-EDIT REQUEST
-******************************************/
-async function editRequest(id){
+    table.innerHTML = `<tr><td colspan="9">Loading...</td></tr>`;
 
     const { data, error } = await supabaseClient
         .from("employee_overtime")
         .select("*")
-        .eq("id", id)
-        .single();
+        .eq("employee_number", currentUser.employee_number)
+        .order("overtime_date", { ascending:false });
 
-    if(error){
-        alert(error.message);
+    if (error) {
+        console.log(error);
+        table.innerHTML = `<tr><td colspan="9">Unable to load requests.</td></tr>`;
         return;
     }
 
-    console.log("FULL RECORD");
-    console.log(data);
+    dropdown.innerHTML = '<option value="">Select Approved Request</option>';
 
-    console.log("time_in =", data.time_in);
-    console.log("time_out =", data.time_out);
+    const approvedRequests = data.filter(row =>
+        String(row.department_status || "").toLowerCase() === "approved" &&
+        !row.completion_report
+    );
+
+    approvedRequests.forEach(row => {
+        const option = document.createElement("option");
+        option.value = row.id;
+        option.textContent = `${row.overtime_date} - ${row.total_hours} hours`;
+        dropdown.appendChild(option);
+    });
+
+    table.innerHTML = "";
+
+    if (data.length === 0) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="9" style="padding:20px;">No overtime requests found.</td>
+            </tr>`;
+        return;
+    }
+
+    data.forEach(row => addRequestRow(row));
+}
+
+/******************************************
+DISPLAY REQUEST ROW
+******************************************/
+function addRequestRow(row) {
+    const table = document.getElementById("requestTable");
+
+    const departmentStatus = String(row.department_status || "").toLowerCase();
+    const hrStatus = String(row.hr_status || "").toLowerCase();
+    const hasCompletion = Boolean(row.completion_report);
+
+    const canEdit = departmentStatus === "pending" &&
+        (hrStatus === "waiting" || hrStatus === "pending");
+
+    const canComplete = departmentStatus === "approved" && !hasCompletion;
+
+    let action = "";
+
+    if (canEdit) {
+        action = `
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="editRequest('${escapeHTML(row.id)}')">Edit</button>
+                <button class="btn btn-danger" onclick="deleteRequest('${escapeHTML(row.id)}')">Delete</button>
+            </div>`;
+    } else if (canComplete) {
+        action = `
+            <button class="btn btn-primary" onclick="showCompletionForm('${escapeHTML(row.id)}')">
+                Submit Completion
+            </button>`;
+    } else if (hasCompletion) {
+        action = `<span style="color:#003366;font-weight:bold;">Submitted</span>`;
+    } else {
+        action = `<span style="color:#777;font-weight:bold;">Locked</span>`;
+    }
+
+    const actualNet = row.actual_net_hours !== null && row.actual_net_hours !== undefined
+        ? Number(row.actual_net_hours).toFixed(2) + " hrs"
+        : "-";
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td>${escapeHTML(row.overtime_date)}</td>
+        <td>${escapeHTML(row.total_hours)}</td>
+        <td>${getStatusBadge(row.department_status)}</td>
+        <td>${getStatusBadge(row.hr_status)}</td>
+        <td>${escapeHTML(row.department)}</td>
+        <td>${escapeHTML(row.remarks || "-")}</td>
+        <td>
+            ${escapeHTML(actualNet)}
+            ${hasCompletion ? `<div class="helper-text">${escapeHTML(row.actual_break_minutes ?? 0)} min break</div>` : ""}
+        </td>
+        <td>${getStatusBadge(row.final_manager_status || "Waiting")}</td>
+        <td>${action}</td>
+    `;
+
+    table.appendChild(tr);
+}
+
+/******************************************
+EDIT REQUEST
+******************************************/
+async function editRequest(id) {
+    const { data, error } = await supabaseClient
+        .from("employee_overtime")
+        .select("*")
+        .eq("id", id)
+        .eq("employee_number", currentUser.employee_number)
+        .eq("department_status", "Pending")
+        .single();
+
+    if (error || !data) {
+        alert("This request cannot be edited anymore.");
+        return;
+    }
 
     editingID = id;
     currentAttachment = data.attachment || "";
 
-   document.getElementById("timeIn").value =
-`${data.overtime_date}T${String(data.time_in).slice(0,5)}`;
+    document.getElementById("timeIn").value =
+        `${data.overtime_date}T${String(data.time_in).slice(0,5)}`;
 
-document.getElementById("timeOut").value =
-`${data.overtime_end_date}T${String(data.time_out).slice(0,5)}`;
+    document.getElementById("timeOut").value =
+        `${data.overtime_end_date}T${String(data.time_out).slice(0,5)}`;
 
-    document.getElementById("reason").value =
-        data.reason;
-
-    document.getElementById("totalHours").value =
-        data.total_hours;
+    document.getElementById("reason").value = data.reason || "";
+    document.getElementById("expectedTasks").value = data.expected_tasks || "";
+    document.getElementById("totalHours").value = data.total_hours || "";
+    document.getElementById("attachment").value = "";
 
     document.getElementById("submitOTBtn").innerHTML =
         '<i class="fa fa-save"></i> Update Request';
 
     computeHours();
 
-    console.log("INPUT timeIn =", document.getElementById("timeIn").value);
-    console.log("INPUT timeOut =", document.getElementById("timeOut").value);
+    document.querySelector(".content .card").scrollIntoView({behavior:"smooth"});
 }
-    function logout() {
 
-    // Remove the login session
-    localStorage.removeItem("currentUser");
-
-    // Optional: clear all local storage
-    // localStorage.clear();
-
-    // Redirect to login page
-    window.location.replace("https://interfreight.github.io/login/");
-}
 /******************************************
 DELETE REQUEST
 ******************************************/
+async function deleteRequest(id) {
+    if (!confirm("Are you sure you want to delete this request?")) return;
 
-async function deleteRequest(id){
-
-    if(!confirm("Delete this request?")){
-        return;
-    }
-
-    const { error } = await supabaseClient
+    const { data, error } = await supabaseClient
         .from("employee_overtime")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("employee_number", currentUser.employee_number)
+        .eq("department_status", "Pending")
+        .select("id");
 
-    if(error){
+    if (error) {
         alert(error.message);
         return;
     }
 
-    alert("Request deleted successfully.");
+    if (!data || data.length === 0) {
+        alert("This request cannot be deleted anymore.");
+        return;
+    }
 
+    alert("Overtime request deleted successfully.");
     await loadMyRequests();
-
 }
 
-document
-.getElementById("submitOTBtn")
-.addEventListener(
-    "click",
-    submitOvertime
-);
+/******************************************
+OPEN COMPLETION FORM
+******************************************/
+function showCompletionForm(id) {
+    document.getElementById("completionCard").classList.remove("hidden");
+    document.getElementById("completionRequest").value = id;
+    document.getElementById("actualBreakMinutes").value = "0";
+    computeActualHours();
+    document.getElementById("completionCard").scrollIntoView({behavior:"smooth"});
+}
 
-document.addEventListener("DOMContentLoaded", async () => {
+/******************************************
+CLOSE COMPLETION FORM
+******************************************/
+function closeCompletionForm() {
+    document.getElementById("completionCard").classList.add("hidden");
+    document.getElementById("completionRequest").value = "";
+    document.getElementById("actualTimeIn").value = "";
+    document.getElementById("actualTimeOut").value = "";
+    document.getElementById("actualBreakMinutes").value = "0";
+    document.getElementById("actualTotalHours").value = "";
+    document.getElementById("actualNetHours").value = "";
+    document.getElementById("elapsedDisplay").textContent = "0.00 hours";
+    document.getElementById("breakDisplay").textContent = "0 minutes";
+    document.getElementById("netHoursDisplay").textContent = "0.00 hours";
+    document.getElementById("completionReport").value = "";
+    document.getElementById("completionAttachment").value = "";
+}
+
+/******************************************
+SUBMIT COMPLETION REPORT
+******************************************/
+async function submitCompletionReport() {
+    const button = document.getElementById("submitCompletionBtn");
+
+    if (button.disabled) return;
+
+    const id = document.getElementById("completionRequest").value;
+    const timeIn = document.getElementById("actualTimeIn").value;
+    const timeOut = document.getElementById("actualTimeOut").value;
+    const breakMinutes = Number(document.getElementById("actualBreakMinutes").value);
+    const report = document.getElementById("completionReport").value.trim();
+
+    if (!id) {
+        alert("Please select an approved overtime request.");
+        return;
+    }
+
+    if (!timeIn || !timeOut) {
+        alert("Please enter actual overtime dates and times.");
+        return;
+    }
+
+    const start = new Date(timeIn);
+    const end = new Date(timeOut);
+    const elapsedMilliseconds = end - start;
+
+    if (elapsedMilliseconds <= 0) {
+        alert("Actual Time Out must be later than Actual Time In.");
+        return;
+    }
+
+    if (!Number.isInteger(breakMinutes) || breakMinutes < 0) {
+        alert("Please enter a valid break duration in whole minutes. Enter 0 if you did not take a break.");
+        return;
+    }
+
+    const elapsedMinutes = elapsedMilliseconds / 60000;
+
+    if (breakMinutes > elapsedMinutes) {
+        alert("Break duration cannot be greater than the total elapsed overtime time.");
+        return;
+    }
+
+    if (!report) {
+        alert("Please enter your accomplishment report.");
+        return;
+    }
+
+    const elapsedHours = elapsedMilliseconds / 3600000;
+    const netHours = (elapsedMinutes - breakMinutes) / 60;
+
+    document.getElementById("actualTotalHours").value = elapsedHours.toFixed(2);
+    document.getElementById("actualNetHours").value = netHours.toFixed(2);
+
+    button.disabled = true;
+
+    try {
+        // Verify ownership and initial approval.
+        const { data: request, error: requestError } = await supabaseClient
+            .from("employee_overtime")
+            .select("id,department_status,completion_report")
+            .eq("id", id)
+            .eq("employee_number", currentUser.employee_number)
+            .single();
+
+        if (requestError || !request) {
+            throw new Error("Unable to verify overtime request.");
+        }
+
+        if (String(request.department_status || "").toLowerCase() !== "approved") {
+            throw new Error("Only approved overtime requests can be completed.");
+        }
+
+        if (request.completion_report) {
+            throw new Error("A completion report has already been submitted.");
+        }
+
+        const attachmentURL = await uploadCompletionAttachment();
+
+        const payload = {
+            actual_overtime_date: timeIn.split("T")[0],
+            actual_overtime_end_date: timeOut.split("T")[0],
+            actual_time_in: timeIn.split("T")[1],
+            actual_time_out: timeOut.split("T")[1],
+            actual_total_hours: Number(elapsedHours.toFixed(2)),
+            actual_break_minutes: breakMinutes,
+            actual_net_hours: Number(netHours.toFixed(2)),
+            completion_report: report,
+            completion_attachment: attachmentURL,
+            final_manager_status: "Pending"
+        };
+
+        const { data, error } = await supabaseClient
+            .from("employee_overtime")
+            .update(payload)
+            .eq("id", id)
+            .eq("employee_number", currentUser.employee_number)
+            .eq("department_status", request.department_status)
+            .is("completion_report", null)
+            .select("id");
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            throw new Error("The request has already been submitted or is no longer eligible.");
+        }
+
+        alert("Overtime completion report submitted successfully!");
+
+        closeCompletionForm();
+        await loadMyRequests();
+
+    } catch (error) {
+        alert("Submission failed: " + error.message);
+    } finally {
+        button.disabled = false;
+    }
+}
+
+document.getElementById("submitCompletionBtn")
+    .addEventListener("click", submitCompletionReport);
+
+/******************************************
+LOGOUT
+******************************************/
+function logout() {
+    localStorage.removeItem("currentUser");
+    window.location.replace("https://interfreight.github.io/login/");
+}
+
+/******************************************
+INITIALIZE
+******************************************/
+document.addEventListener("DOMContentLoaded", async function() {
+    if (!currentUser) return;
 
     await loadEmployee();
-
     await loadMyRequests();
-
 });
 </script>
 

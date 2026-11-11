@@ -167,80 +167,67 @@ td{color:#333}
             </button>
         </div>
 
-        <!-- COMPLETION REPORT FORM -->
-        <div class="card hidden" id="completionCard">
-            <h2 class="section-title">Overtime Completion Report</h2>
+<!-- COMPLETION REPORT FORM -->
+<div class="card hidden" id="completionCard">
+    <h2 class="section-title">Overtime Completion Report</h2>
 
-            <div class="info-box">
-                <i class="fa fa-info-circle"></i>
-                Submit your actual overtime hours and accomplishments after completing your approved overtime. Enter your actual break duration. If you did not take a break, enter 0.
-            </div>
+    <div class="info-box">
+        <i class="fa fa-info-circle"></i>
+        Submit your actual overtime time-in, time-out, and accomplishment report after completing your approved overtime. Your manager will verify and deduct the actual break duration during final approval.
+    </div>
 
-            <div class="form-grid">
-                <div class="form-group full-width">
-                    <label>Approved Overtime Request</label>
-                    <select id="completionRequest">
-                        <option value="">Select Approved Request</option>
-                    </select>
-                </div>
+    <div class="form-grid">
 
-                <div class="form-group">
-                    <label>Actual Date &amp; Time In</label>
-                    <input type="datetime-local" id="actualTimeIn">
-                </div>
-
-                <div class="form-group">
-                    <label>Actual Date &amp; Time Out</label>
-                    <input type="datetime-local" id="actualTimeOut">
-                </div>
-
-                <div class="form-group">
-                    <label>Break Duration (Minutes)</label>
-                    <input type="number" id="actualBreakMinutes" min="0" step="1" value="0" placeholder="Enter 0 if no break">
-                    <span class="helper-text">Enter the actual number of minutes you took for breaks. Enter 0 if you did not take a break.</span>
-                </div>
-
-                <div class="form-group">
-                    <label>Total Elapsed Hours</label>
-                    <input id="actualTotalHours" readonly>
-                </div>
-
-                <div class="form-group full-width">
-                    <div class="calculation-box">
-                        <div class="calculation-row">
-                            <span>Total Elapsed Hours</span>
-                            <strong id="elapsedDisplay">0.00 hours</strong>
-                        </div>
-                        <div class="calculation-row">
-                            <span>Less: Break Duration</span>
-                            <strong id="breakDisplay">0 minutes</strong>
-                        </div>
-                        <div class="calculation-row net-result">
-                            <span>Net Actual Overtime</span>
-                            <strong id="netHoursDisplay">0.00 hours</strong>
-                        </div>
-                    </div>
-                    <input type="hidden" id="actualNetHours">
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Accomplishment Report</label>
-                    <textarea id="completionReport" placeholder="Describe the tasks completed during overtime..."></textarea>
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Completion Attachment</label>
-                    <input type="file" id="completionAttachment">
-                </div>
-            </div>
-
-            <br>
-            <button class="btn btn-primary submit-btn" id="submitCompletionBtn">
-                <i class="fa fa-paper-plane"></i> Submit Completion Report
-            </button>
-
-            <button class="btn btn-secondary" onclick="closeCompletionForm()">Cancel</button>
+        <div class="form-group full-width">
+            <label>Approved Overtime Request</label>
+            <select id="completionRequest">
+                <option value="">Select Approved Request</option>
+            </select>
         </div>
+
+        <div class="form-group">
+            <label>Actual Date &amp; Time In</label>
+            <input type="datetime-local" id="actualTimeIn">
+        </div>
+
+        <div class="form-group">
+            <label>Actual Date &amp; Time Out</label>
+            <input type="datetime-local" id="actualTimeOut">
+        </div>
+
+        <div class="form-group full-width">
+            <label>Total Elapsed Hours</label>
+            <input id="actualTotalHours" readonly>
+            <span class="helper-text">
+                Automatically calculated using your actual time-in and time-out.
+                Final net overtime will be calculated by your manager.
+            </span>
+        </div>
+
+        <div class="form-group full-width">
+            <label>Accomplishment Report</label>
+            <textarea id="completionReport"
+                placeholder="Describe the tasks completed during overtime..."></textarea>
+        </div>
+
+        <div class="form-group full-width">
+            <label>Completion Attachment</label>
+            <input type="file" id="completionAttachment">
+        </div>
+
+    </div>
+
+    <br>
+
+    <button class="btn btn-primary submit-btn" id="submitCompletionBtn">
+        <i class="fa fa-paper-plane"></i> Submit Completion Report
+    </button>
+
+    <button class="btn btn-secondary" onclick="closeCompletionForm()">
+        Cancel
+    </button>
+</div>
+
 
         <!-- MY REQUESTS -->
         <div class="card">
@@ -397,64 +384,43 @@ function computeHours() {
 document.getElementById("timeIn").addEventListener("change", computeHours);
 document.getElementById("timeOut").addEventListener("change", computeHours);
 
+
 /******************************************
-COMPUTE ACTUAL HOURS LESS BREAK
+COMPUTE ACTUAL ELAPSED HOURS
+EMPLOYEE DOES NOT DECLARE BREAK
 ******************************************/
 function computeActualHours() {
+
     const timeIn = document.getElementById("actualTimeIn").value;
     const timeOut = document.getElementById("actualTimeOut").value;
-    const breakInput = document.getElementById("actualBreakMinutes");
 
-    const elapsedOutput = document.getElementById("actualTotalHours");
-    const netOutput = document.getElementById("actualNetHours");
-
-    const elapsedDisplay = document.getElementById("elapsedDisplay");
-    const breakDisplay = document.getElementById("breakDisplay");
-    const netDisplay = document.getElementById("netHoursDisplay");
-
-    const breakMinutes = Number(breakInput.value);
+    const output = document.getElementById("actualTotalHours");
 
     if (!timeIn || !timeOut) {
-        elapsedOutput.value = "";
-        netOutput.value = "";
-        elapsedDisplay.textContent = "0.00 hours";
-        breakDisplay.textContent = "0 minutes";
-        netDisplay.textContent = "0.00 hours";
+        output.value = "";
         return;
     }
 
     const start = new Date(timeIn);
     const end = new Date(timeOut);
+
     const diff = end - start;
 
     if (diff <= 0) {
-        elapsedOutput.value = "";
-        netOutput.value = "";
-        elapsedDisplay.textContent = "Invalid time range";
-        breakDisplay.textContent = "0 minutes";
-        netDisplay.textContent = "0.00 hours";
+        output.value = "";
         return;
     }
 
-    const elapsedMinutes = diff / 60000;
-    const elapsedHours = elapsedMinutes / 60;
+    const elapsedHours = diff / 3600000;
 
-    const validBreak = Number.isInteger(breakMinutes) && breakMinutes >= 0;
-    const netHours = validBreak
-        ? Math.max(0, (elapsedMinutes - breakMinutes) / 60)
-        : 0;
-
-    elapsedOutput.value = elapsedHours.toFixed(2);
-    netOutput.value = validBreak ? netHours.toFixed(2) : "";
-
-    elapsedDisplay.textContent = elapsedHours.toFixed(2) + " hours";
-    breakDisplay.textContent = validBreak ? breakMinutes + " minutes" : "Invalid break duration";
-    netDisplay.textContent = validBreak ? netHours.toFixed(2) + " hours" : "Please enter valid minutes";
+    output.value = elapsedHours.toFixed(2);
 }
 
-document.getElementById("actualTimeIn").addEventListener("change", computeActualHours);
-document.getElementById("actualTimeOut").addEventListener("change", computeActualHours);
-document.getElementById("actualBreakMinutes").addEventListener("input", computeActualHours);
+document.getElementById("actualTimeIn")
+    .addEventListener("change", computeActualHours);
+
+document.getElementById("actualTimeOut")
+    .addEventListener("change", computeActualHours);
 
 /******************************************
 UPLOAD REQUEST ATTACHMENT
@@ -763,87 +729,82 @@ async function loadMyRequests() {
 
 }
 
+
 /******************************************
 DISPLAY REQUEST ROW
 ******************************************/
-
 function addRequestRow(row) {
+
     const table = document.getElementById("requestTable");
 
-    const departmentStatus = String(row.department_status || "").toLowerCase();
-    const hasCompletion = Boolean(row.completion_report);
+    const departmentStatus =
+        String(row.department_status || "").toLowerCase();
 
-    const canEdit = canEditOrDelete(row);
+    const hasCompletion = Boolean(row.completion_report);
 
     const canComplete =
         departmentStatus === "approved" && !hasCompletion;
 
     let action = "";
 
-    if (canEdit) {
-        action = `
-            <div class="action-buttons">
-                <button class="btn btn-primary"
-                    onclick="editRequest('${escapeHTML(row.id)}')">
-                    <i class="fa fa-edit"></i> Edit
-                </button>
+    if (canComplete) {
 
-                <button class="btn btn-danger"
-                    onclick="deleteRequest('${escapeHTML(row.id)}')">
-                    <i class="fa fa-trash"></i> Delete
-                </button>
-            </div>
-        `;
-    }
-    else if (canComplete) {
         action = `
             <button class="btn btn-primary"
                 onclick="showCompletionForm('${escapeHTML(row.id)}')">
                 Submit Completion
             </button>
         `;
-    }
-    else if (hasCompletion) {
+
+    } else if (hasCompletion) {
+
         action = `
             <span style="color:#003366;font-weight:bold;">
                 Submitted
             </span>
         `;
-    }
-    else {
+
+    } else {
+
         action = `
             <span style="color:#777;font-weight:bold;">
-                Locked
+                Waiting for Approval
             </span>
         `;
     }
 
-    const actualNet =
-        row.actual_net_hours !== null &&
-        row.actual_net_hours !== undefined
-        ? Number(row.actual_net_hours).toFixed(2) + " hrs"
-        : "-";
+    let actualNet = "-";
+
+    if (row.actual_net_hours !== null &&
+        row.actual_net_hours !== undefined) {
+
+        actualNet =
+            Number(row.actual_net_hours).toFixed(2) + " hrs";
+
+    } else if (hasCompletion) {
+
+        actualNet = "For Manager Review";
+    }
 
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
         <td>${escapeHTML(row.overtime_date)}</td>
+
         <td>${escapeHTML(row.total_hours)}</td>
+
         <td>${getStatusBadge(row.department_status)}</td>
+
         <td>${getStatusBadge(row.hr_status)}</td>
+
         <td>${escapeHTML(row.department)}</td>
+
         <td>${escapeHTML(row.remarks || "-")}</td>
 
-        <td>
-            ${escapeHTML(actualNet)}
-            ${hasCompletion
-                ? `<div class="helper-text">
-                    ${escapeHTML(row.actual_break_minutes ?? 0)} min break
-                   </div>`
-                : ""}
-        </td>
+        <td>${escapeHTML(actualNet)}</td>
 
         <td>${getStatusBadge(row.final_manager_status || "Waiting")}</td>
+
         <td>${action}</td>
     `;
 
@@ -963,44 +924,62 @@ async function deleteRequest(id) {
 /******************************************
 OPEN COMPLETION FORM
 ******************************************/
+
+/******************************************
+OPEN COMPLETION FORM
+******************************************/
 function showCompletionForm(id) {
-    document.getElementById("completionCard").classList.remove("hidden");
+
+    document.getElementById("completionCard")
+        .classList.remove("hidden");
+
     document.getElementById("completionRequest").value = id;
-    document.getElementById("actualBreakMinutes").value = "0";
-    computeActualHours();
-    document.getElementById("completionCard").scrollIntoView({behavior:"smooth"});
+
+    document.getElementById("actualTimeIn").value = "";
+    document.getElementById("actualTimeOut").value = "";
+    document.getElementById("actualTotalHours").value = "";
+
+    document.getElementById("completionReport").value = "";
+    document.getElementById("completionAttachment").value = "";
+
+    document.getElementById("completionCard")
+        .scrollIntoView({ behavior: "smooth" });
 }
 
 /******************************************
 CLOSE COMPLETION FORM
 ******************************************/
 function closeCompletionForm() {
-    document.getElementById("completionCard").classList.add("hidden");
+
+    document.getElementById("completionCard")
+        .classList.add("hidden");
+
     document.getElementById("completionRequest").value = "";
+
     document.getElementById("actualTimeIn").value = "";
     document.getElementById("actualTimeOut").value = "";
-    document.getElementById("actualBreakMinutes").value = "0";
     document.getElementById("actualTotalHours").value = "";
-    document.getElementById("actualNetHours").value = "";
-    document.getElementById("elapsedDisplay").textContent = "0.00 hours";
-    document.getElementById("breakDisplay").textContent = "0 minutes";
-    document.getElementById("netHoursDisplay").textContent = "0.00 hours";
+
     document.getElementById("completionReport").value = "";
     document.getElementById("completionAttachment").value = "";
 }
 
+
 /******************************************
 SUBMIT COMPLETION REPORT
+MANAGER WILL ENTER BREAK DURATION
 ******************************************/
 async function submitCompletionReport() {
+
     const button = document.getElementById("submitCompletionBtn");
 
     if (button.disabled) return;
 
     const id = document.getElementById("completionRequest").value;
+
     const timeIn = document.getElementById("actualTimeIn").value;
     const timeOut = document.getElementById("actualTimeOut").value;
-    const breakMinutes = Number(document.getElementById("actualBreakMinutes").value);
+
     const report = document.getElementById("completionReport").value.trim();
 
     if (!id) {
@@ -1015,22 +994,11 @@ async function submitCompletionReport() {
 
     const start = new Date(timeIn);
     const end = new Date(timeOut);
+
     const elapsedMilliseconds = end - start;
 
     if (elapsedMilliseconds <= 0) {
         alert("Actual Time Out must be later than Actual Time In.");
-        return;
-    }
-
-    if (!Number.isInteger(breakMinutes) || breakMinutes < 0) {
-        alert("Please enter a valid break duration in whole minutes. Enter 0 if you did not take a break.");
-        return;
-    }
-
-    const elapsedMinutes = elapsedMilliseconds / 60000;
-
-    if (breakMinutes > elapsedMinutes) {
-        alert("Break duration cannot be greater than the total elapsed overtime time.");
         return;
     }
 
@@ -1040,46 +1008,62 @@ async function submitCompletionReport() {
     }
 
     const elapsedHours = elapsedMilliseconds / 3600000;
-    const netHours = (elapsedMinutes - breakMinutes) / 60;
 
-    document.getElementById("actualTotalHours").value = elapsedHours.toFixed(2);
-    document.getElementById("actualNetHours").value = netHours.toFixed(2);
+    document.getElementById("actualTotalHours").value =
+        elapsedHours.toFixed(2);
 
     button.disabled = true;
 
     try {
-        // Verify ownership and initial approval.
-        const { data: request, error: requestError } = await supabaseClient
-            .from("employee_overtime")
-            .select("id,department_status,completion_report")
-            .eq("id", id)
-            .eq("employee_number", currentUser.employee_number)
-            .single();
+
+        // Verify request ownership and approval using employee name.
+        const { data: request, error: requestError } =
+            await supabaseClient
+                .from("employee_overtime")
+                .select("id,employee_name,department_status,completion_report")
+                .eq("id", id)
+                .eq("employee_name", currentUser.full_name)
+                .single();
 
         if (requestError || !request) {
             throw new Error("Unable to verify overtime request.");
         }
 
-        if (String(request.department_status || "").toLowerCase() !== "approved") {
-            throw new Error("Only approved overtime requests can be completed.");
+        if (
+            String(request.department_status || "").toLowerCase()
+            !== "approved"
+        ) {
+            throw new Error(
+                "Only approved overtime requests can be completed."
+            );
         }
 
         if (request.completion_report) {
-            throw new Error("A completion report has already been submitted.");
+            throw new Error(
+                "A completion report has already been submitted."
+            );
         }
 
         const attachmentURL = await uploadCompletionAttachment();
 
+        // Employee submits elapsed hours only.
+        // Manager will enter break duration during final approval.
         const payload = {
+
             actual_overtime_date: timeIn.split("T")[0],
+
             actual_overtime_end_date: timeOut.split("T")[0],
+
             actual_time_in: timeIn.split("T")[1],
+
             actual_time_out: timeOut.split("T")[1],
+
             actual_total_hours: Number(elapsedHours.toFixed(2)),
-            actual_break_minutes: breakMinutes,
-            actual_net_hours: Number(netHours.toFixed(2)),
+
             completion_report: report,
+
             completion_attachment: attachmentURL,
+
             final_manager_status: "Pending"
         };
 
@@ -1087,25 +1071,33 @@ async function submitCompletionReport() {
             .from("employee_overtime")
             .update(payload)
             .eq("id", id)
-            .eq("employee_number", currentUser.employee_number)
-            .eq("department_status", request.department_status)
+            .eq("employee_name", currentUser.full_name)
+            .eq("department_status", "Approved")
             .is("completion_report", null)
             .select("id");
 
         if (error) throw error;
 
         if (!data || data.length === 0) {
-            throw new Error("The request has already been submitted or is no longer eligible.");
+            throw new Error(
+                "The request has already been submitted or is no longer eligible."
+            );
         }
 
-        alert("Overtime completion report submitted successfully!");
+        alert(
+            "Overtime completion report submitted successfully! Please wait for your manager's final verification."
+        );
 
         closeCompletionForm();
+
         await loadMyRequests();
 
     } catch (error) {
+
         alert("Submission failed: " + error.message);
+
     } finally {
+
         button.disabled = false;
     }
 }

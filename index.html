@@ -855,17 +855,35 @@ function addRequestRow(row) {
 EDIT REQUEST
 ******************************************/
 
+
 async function editRequest(id) {
+
     const { data, error } = await supabaseClient
         .from("employee_overtime")
         .select("*")
         .eq("id", id)
-        .eq("employee_number", currentUser.employee_number)
         .single();
 
-    if (error || !data || !canEditOrDelete(data)) {
-        alert("This request can no longer be edited.");
-        await loadMyRequests();
+    console.log("REQUEST DATA:", data);
+    console.log("CURRENT USER:", currentUser);
+    console.log("DATABASE EMPLOYEE NUMBER:", data?.employee_number);
+    console.log("LOGIN EMPLOYEE NUMBER:", currentUser.employee_number);
+    console.log("DEPARTMENT STATUS:", data?.department_status);
+    console.log("HR STATUS:", data?.hr_status);
+
+    if (error || !data) {
+        alert("Unable to find this request.");
+        return;
+    }
+
+    if (data.employee_number !== currentUser.employee_number) {
+        alert("Employee number mismatch. Please check the console.");
+        return;
+    }
+
+    if (!canEditOrDelete(data)) {
+        alert("Request status: " + data.department_status +
+              "\nHR Status: " + data.hr_status);
         return;
     }
 
@@ -879,12 +897,8 @@ async function editRequest(id) {
         `${data.overtime_end_date}T${String(data.time_out).slice(0,5)}`;
 
     document.getElementById("reason").value = data.reason || "";
-
-    document.getElementById("expectedTasks").value =
-        data.expected_tasks || "";
-
-    document.getElementById("totalHours").value =
-        data.total_hours || "";
+    document.getElementById("expectedTasks").value = data.expected_tasks || "";
+    document.getElementById("totalHours").value = data.total_hours || "";
 
     document.getElementById("attachment").value = "";
 

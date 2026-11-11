@@ -335,6 +335,18 @@ function getStatusBadge(status) {
 }
 
 /******************************************
+CHECK IF REQUEST CAN BE EDITED OR DELETED
+******************************************/
+function canEditOrDelete(row) {
+    const departmentStatus = String(row.department_status || "").toLowerCase();
+    const hrStatus = String(row.hr_status || "").toLowerCase();
+
+    return departmentStatus === "pending" &&
+           (hrStatus === "waiting" || hrStatus === "pending") &&
+           !row.completion_report;
+}
+
+/******************************************
 LOAD EMPLOYEE
 ******************************************/
 async function loadEmployee() {
@@ -754,38 +766,61 @@ async function loadMyRequests() {
 /******************************************
 DISPLAY REQUEST ROW
 ******************************************/
+
 function addRequestRow(row) {
     const table = document.getElementById("requestTable");
 
     const departmentStatus = String(row.department_status || "").toLowerCase();
-    const hrStatus = String(row.hr_status || "").toLowerCase();
     const hasCompletion = Boolean(row.completion_report);
 
-    const canEdit = departmentStatus === "pending" &&
-        (hrStatus === "waiting" || hrStatus === "pending");
+    const canEdit = canEditOrDelete(row);
 
-    const canComplete = departmentStatus === "approved" && !hasCompletion;
+    const canComplete =
+        departmentStatus === "approved" && !hasCompletion;
 
     let action = "";
 
     if (canEdit) {
         action = `
             <div class="action-buttons">
-                <button class="btn btn-primary" onclick="editRequest('${escapeHTML(row.id)}')">Edit</button>
-                <button class="btn btn-danger" onclick="deleteRequest('${escapeHTML(row.id)}')">Delete</button>
-            </div>`;
-    } else if (canComplete) {
+                <button class="btn btn-primary"
+                    onclick="editRequest('${escapeHTML(row.id)}')">
+                    <i class="fa fa-edit"></i> Edit
+                </button>
+
+                <button class="btn btn-danger"
+                    onclick="deleteRequest('${escapeHTML(row.id)}')">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+            </div>
+        `;
+    }
+    else if (canComplete) {
         action = `
-            <button class="btn btn-primary" onclick="showCompletionForm('${escapeHTML(row.id)}')">
+            <button class="btn btn-primary"
+                onclick="showCompletionForm('${escapeHTML(row.id)}')">
                 Submit Completion
-            </button>`;
-    } else if (hasCompletion) {
-        action = `<span style="color:#003366;font-weight:bold;">Submitted</span>`;
-    } else {
-        action = `<span style="color:#777;font-weight:bold;">Locked</span>`;
+            </button>
+        `;
+    }
+    else if (hasCompletion) {
+        action = `
+            <span style="color:#003366;font-weight:bold;">
+                Submitted
+            </span>
+        `;
+    }
+    else {
+        action = `
+            <span style="color:#777;font-weight:bold;">
+                Locked
+            </span>
+        `;
     }
 
-    const actualNet = row.actual_net_hours !== null && row.actual_net_hours !== undefined
+    const actualNet =
+        row.actual_net_hours !== null &&
+        row.actual_net_hours !== undefined
         ? Number(row.actual_net_hours).toFixed(2) + " hrs"
         : "-";
 
@@ -798,10 +833,16 @@ function addRequestRow(row) {
         <td>${getStatusBadge(row.hr_status)}</td>
         <td>${escapeHTML(row.department)}</td>
         <td>${escapeHTML(row.remarks || "-")}</td>
+
         <td>
             ${escapeHTML(actualNet)}
-            ${hasCompletion ? `<div class="helper-text">${escapeHTML(row.actual_break_minutes ?? 0)} min break</div>` : ""}
+            ${hasCompletion
+                ? `<div class="helper-text">
+                    ${escapeHTML(row.actual_break_minutes ?? 0)} min break
+                   </div>`
+                : ""}
         </td>
+
         <td>${getStatusBadge(row.final_manager_status || "Waiting")}</td>
         <td>${action}</td>
     `;
@@ -809,20 +850,22 @@ function addRequestRow(row) {
     table.appendChild(tr);
 }
 
+
 /******************************************
 EDIT REQUEST
 ******************************************/
+
 async function editRequest(id) {
     const { data, error } = await supabaseClient
         .from("employee_overtime")
         .select("*")
         .eq("id", id)
         .eq("employee_number", currentUser.employee_number)
-        .eq("department_status", "Pending")
         .single();
 
-    if (error || !data) {
-        alert("This request cannot be edited anymore.");
+    if (error || !data || !canEditOrDelete(data)) {
+        alert("This request can no longer be edited.");
+        await loadMyRequests();
         return;
     }
 
@@ -836,8 +879,13 @@ async function editRequest(id) {
         `${data.overtime_end_date}T${String(data.time_out).slice(0,5)}`;
 
     document.getElementById("reason").value = data.reason || "";
-    document.getElementById("expectedTasks").value = data.expected_tasks || "";
-    document.getElementById("totalHours").value = data.total_hours || "";
+
+    document.getElementById("expectedTasks").value =
+        data.expected_tasks || "";
+
+    document.getElementById("totalHours").value =
+        data.total_hours || "";
+
     document.getElementById("attachment").value = "";
 
     document.getElementById("submitOTBtn").innerHTML =
@@ -845,14 +893,32 @@ async function editRequest(id) {
 
     computeHours();
 
-    document.querySelector(".content .card").scrollIntoView({behavior:"smooth"});
+    document.querySelector(".content .card")
+        .scrollIntoView({ behavior: "smooth" });
 }
 
 /******************************************
 DELETE REQUEST
 ******************************************/
+
 async function deleteRequest(id) {
-    if (!confirm("Are you sure you want to delete this request?")) return;
+
+    const { data: existing, error: checkError } = await supabaseClient
+        .from("employee_overtime")
+        .select("*")
+        .eq("id", id)
+        .eq("employee_number", currentUser.employee_number)
+        .single();
+
+    if (checkError || !existing || !canEditOrDelete(existing)) {
+        alert("This request can no longer be deleted.");
+        await loadMyRequests();
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete this overtime request?")) {
+        return;
+    }
 
     const { data, error } = await supabaseClient
         .from("employee_overtime")
@@ -860,19 +926,23 @@ async function deleteRequest(id) {
         .eq("id", id)
         .eq("employee_number", currentUser.employee_number)
         .eq("department_status", "Pending")
+        .in("hr_status", ["Waiting", "Pending"])
+        .is("completion_report", null)
         .select("id");
 
     if (error) {
-        alert(error.message);
+        alert("Delete failed: " + error.message);
         return;
     }
 
     if (!data || data.length === 0) {
-        alert("This request cannot be deleted anymore.");
+        alert("This request has already been processed and cannot be deleted.");
+        await loadMyRequests();
         return;
     }
 
-    alert("Overtime request deleted successfully.");
+    alert("Overtime request deleted successfully!");
+
     await loadMyRequests();
 }
 

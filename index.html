@@ -162,9 +162,9 @@ td{color:#333}
             </div>
 
             <br>
-            <button class="btn btn-primary submit-btn" id="submitOTBtn">
-                <i class="fa fa-paper-plane"></i> Submit Overtime Request
-            </button>
+           <button type="button" class="btn btn-primary submit-btn" id="submitOTBtn">
+    <i class="fa fa-paper-plane"></i> Submit Overtime Request
+</button>
         </div>
 
 <!-- COMPLETION REPORT FORM -->
@@ -367,7 +367,12 @@ function computeHours() {
 
     output.value = (diff / 3600000).toFixed(2);
 }
+// AUTOMATIC COMPUTATION OF REQUESTED HOURS
+document.getElementById("timeIn").addEventListener("input", computeHours);
+document.getElementById("timeIn").addEventListener("change", computeHours);
 
+document.getElementById("timeOut").addEventListener("input", computeHours);
+document.getElementById("timeOut").addEventListener("change", computeHours);
 
 /******************************************
 COMPUTE ACTUAL ELAPSED HOURS
@@ -603,7 +608,9 @@ async function submitOvertime() {
         button.disabled = false;
     }
 }
-
+// CONNECT SUBMIT OVERTIME BUTTON
+document.getElementById("submitOTBtn")
+    .addEventListener("click", submitOvertime);
 /******************************************
 LOAD MY OVERTIME REQUESTS
 ******************************************/

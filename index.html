@@ -275,7 +275,6 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 GLOBAL VARIABLES
 ******************************************/
 let employeeID = null;
-let editingID = null;
 let currentAttachment = "";
 
 const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
@@ -322,18 +321,6 @@ function getStatusBadge(status) {
 }
 
 /******************************************
-CHECK IF REQUEST CAN BE EDITED OR DELETED
-******************************************/
-function canEditOrDelete(row) {
-    const departmentStatus = String(row.department_status || "").toLowerCase();
-    const hrStatus = String(row.hr_status || "").toLowerCase();
-
-    return departmentStatus === "pending" &&
-           (hrStatus === "waiting" || hrStatus === "pending") &&
-           !row.completion_report;
-}
-
-/******************************************
 LOAD EMPLOYEE
 ******************************************/
 async function loadEmployee() {
@@ -373,16 +360,13 @@ function computeHours() {
 
     const diff = new Date(timeOut) - new Date(timeIn);
 
-    if (diff <= 0) {
+    if (!Number.isFinite(diff) || diff <= 0) {
         output.value = "";
         return;
     }
 
     output.value = (diff / 3600000).toFixed(2);
 }
-
-document.getElementById("timeIn").addEventListener("change", computeHours);
-document.getElementById("timeOut").addEventListener("change", computeHours);
 
 
 /******************************************
@@ -763,16 +747,16 @@ function addRequestRow(row) {
 
     let actualNet = "-";
 
-    if (row.actual_net_hours !== null &&
-        row.actual_net_hours !== undefined) {
+if (row.actual_net_hours !== null &&
+    row.actual_net_hours !== undefined) {
 
-        actualNet =
-            Number(row.actual_net_hours).toFixed(2) + " hrs";
+    actualNet =
+        Number(row.actual_net_hours).toFixed(2) + " hrs";
 
-    } else if (hasCompletion) {
+} else if (hasCompletion) {
 
-        actualNet = "For Manager Review";
-    }
+    actualNet = "Pending Manager Review";
+}
 
     const tr = document.createElement("tr");
 
@@ -799,115 +783,6 @@ function addRequestRow(row) {
     table.appendChild(tr);
 }
 
-
-/******************************************
-EDIT REQUEST
-******************************************/
-
-
-async function editRequest(id) {
-
-    const { data, error } = await supabaseClient
-        .from("employee_overtime")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-    console.log("REQUEST DATA:", data);
-    console.log("CURRENT USER:", currentUser);
-    console.log("DATABASE EMPLOYEE NUMBER:", data?.employee_number);
-    console.log("LOGIN EMPLOYEE NUMBER:", currentUser.employee_number);
-    console.log("DEPARTMENT STATUS:", data?.department_status);
-    console.log("HR STATUS:", data?.hr_status);
-
-    if (error || !data) {
-        alert("Unable to find this request.");
-        return;
-    }
-
-    if (data.employee_number !== currentUser.employee_number) {
-        alert("Employee number mismatch. Please check the console.");
-        return;
-    }
-
-    if (!canEditOrDelete(data)) {
-        alert("Request status: " + data.department_status +
-              "\nHR Status: " + data.hr_status);
-        return;
-    }
-
-    editingID = id;
-    currentAttachment = data.attachment || "";
-
-    document.getElementById("timeIn").value =
-        `${data.overtime_date}T${String(data.time_in).slice(0,5)}`;
-
-    document.getElementById("timeOut").value =
-        `${data.overtime_end_date}T${String(data.time_out).slice(0,5)}`;
-
-    document.getElementById("reason").value = data.reason || "";
-    document.getElementById("expectedTasks").value = data.expected_tasks || "";
-    document.getElementById("totalHours").value = data.total_hours || "";
-
-    document.getElementById("attachment").value = "";
-
-    document.getElementById("submitOTBtn").innerHTML =
-        '<i class="fa fa-save"></i> Update Request';
-
-    computeHours();
-
-    document.querySelector(".content .card")
-        .scrollIntoView({ behavior: "smooth" });
-}
-
-/******************************************
-DELETE REQUEST
-******************************************/
-
-async function deleteRequest(id) {
-
-    const { data: existing, error: checkError } = await supabaseClient
-        .from("employee_overtime")
-        .select("*")
-        .eq("id", id)
-        .eq("employee_number", currentUser.employee_number)
-        .single();
-
-    if (checkError || !existing || !canEditOrDelete(existing)) {
-        alert("This request can no longer be deleted.");
-        await loadMyRequests();
-        return;
-    }
-
-    if (!confirm("Are you sure you want to delete this overtime request?")) {
-        return;
-    }
-
-    const { data, error } = await supabaseClient
-        .from("employee_overtime")
-        .delete()
-        .eq("id", id)
-        .eq("employee_number", currentUser.employee_number)
-        .eq("department_status", "Pending")
-        .in("hr_status", ["Waiting", "Pending"])
-        .is("completion_report", null)
-        .select("id");
-
-    if (error) {
-        alert("Delete failed: " + error.message);
-        return;
-    }
-
-    if (!data || data.length === 0) {
-        alert("This request has already been processed and cannot be deleted.");
-        await loadMyRequests();
-        return;
-    }
-
-    alert("Overtime request deleted successfully!");
-
-    await loadMyRequests();
-}
 
 /******************************************
 OPEN COMPLETION FORM

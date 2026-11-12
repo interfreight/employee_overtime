@@ -243,7 +243,7 @@ td{color:#333}
                             <th>HR Status</th>
                             <th>Department</th>
                             <th>Remarks</th>
-                            <th>Net Actual Hours</th>
+                           <th>Manager-Verified Net Actual Hours</th>
                             <th>Final Manager Status</th>
                             <th>Action</th>
                         </tr>
@@ -511,15 +511,19 @@ function clearForm() {
 /******************************************
 SUBMIT / UPDATE OVERTIME REQUEST
 ******************************************/
+
 async function submitOvertime() {
+
     const button = document.getElementById("submitOTBtn");
 
     if (button.disabled) return;
 
     const timeIn = document.getElementById("timeIn").value;
     const timeOut = document.getElementById("timeOut").value;
+
     const reason = document.getElementById("reason").value.trim();
     const expectedTasks = document.getElementById("expectedTasks").value.trim();
+
     const hours = Number(document.getElementById("totalHours").value);
 
     if (!timeIn || !timeOut) {
@@ -545,92 +549,76 @@ async function submitOvertime() {
     button.disabled = true;
 
     try {
+
         const attachmentURL = await uploadAttachment();
 
         const request = {
-            employee_number: currentUser.employee_number,
+
+            employee_number: currentUser.employee_number || null,
+
             employee_name: currentUser.full_name,
+
             department: currentUser.department,
+
             approver_role: getApproverRole(),
+
             position: document.getElementById("position").value,
+
             overtime_date: timeIn.split("T")[0],
+
             overtime_end_date: timeOut.split("T")[0],
+
             time_in: timeIn.split("T")[1],
+
             time_out: timeOut.split("T")[1],
+
             total_hours: hours,
+
             reason: reason,
+
             expected_tasks: expectedTasks,
+
             attachment: attachmentURL,
+
             department_status: "Pending",
+
             department_approved_by: null,
+
             department_approved_date: null,
+
             hr_status: "Waiting",
+
             hr_approved_by: null,
+
             hr_approved_date: null
         };
 
-        if (editingID) {
-            const { data: existing, error: checkError } = await supabaseClient
-                .from("employee_overtime")
-                .select("id")
-                .eq("id", editingID)
-                .eq("employee_number", currentUser.employee_number)
-                .eq("department_status", "Pending")
-                .single();
+        const { error } = await supabaseClient
+            .from("employee_overtime")
+            .insert([request]);
 
-            if (checkError || !existing) {
-                alert("This request can no longer be edited.");
-                return;
-            }
+        if (error) throw error;
 
-            const updatePayload = {
-                overtime_date: request.overtime_date,
-                overtime_end_date: request.overtime_end_date,
-                time_in: request.time_in,
-                time_out: request.time_out,
-                total_hours: request.total_hours,
-                reason: request.reason,
-                expected_tasks: request.expected_tasks,
-                attachment: request.attachment
-            };
+        alert("Overtime request submitted successfully!");
 
-            const { data, error } = await supabaseClient
-                .from("employee_overtime")
-                .update(updatePayload)
-                .eq("id", editingID)
-                .eq("employee_number", currentUser.employee_number)
-                .eq("department_status", "Pending")
-                .select("id");
+        document.getElementById("timeIn").value = "";
+        document.getElementById("timeOut").value = "";
+        document.getElementById("totalHours").value = "";
+        document.getElementById("reason").value = "";
+        document.getElementById("expectedTasks").value = "";
+        document.getElementById("attachment").value = "";
 
-            if (error) throw error;
-
-            if (!data || data.length === 0) {
-                alert("Request is no longer editable.");
-                return;
-            }
-
-            alert("Overtime request updated successfully!");
-        } else {
-            const { error } = await supabaseClient
-                .from("employee_overtime")
-                .insert([request]);
-
-            if (error) throw error;
-
-            alert("Overtime request submitted successfully!");
-        }
-
-        clearForm();
         await loadMyRequests();
 
     } catch (error) {
-        alert("Error: " + error.message);
+
+        alert("Submission failed: " + error.message);
+
     } finally {
+
         button.disabled = false;
     }
 }
-
-document.getElementById("submitOTBtn").addEventListener("click", submitOvertime);
 
 /******************************************
 LOAD MY OVERTIME REQUESTS
@@ -964,6 +952,11 @@ function closeCompletionForm() {
     document.getElementById("completionAttachment").value = "";
 }
 
+
+/******************************************
+SUBMIT COMPLETION REPORT
+MANAGER WILL ENTER BREAK DURATION
+******************************************/
 
 /******************************************
 SUBMIT COMPLETION REPORT
